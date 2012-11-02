@@ -1,0 +1,34 @@
+{
+  "name": "ARTIFACTID",
+  "version": "ARTIFACTVERSION",
+  "description": "Library of functions used by all Node.js projects in AURIN",
+  "url": "http://aurin.org.au",
+  "keywords": [
+    "aurin",
+    "commons",
+    "cache"
+  ],
+  "author": {
+    "name": "Luca Morandini",
+    "email": "luca.morandini@unimelb.edu.au"
+  },
+  "contributors": [
+  ],
+  "main": "./lib/commons.js",
+  "dependencies": {
+    "express": "EXPRESSVERSION",
+    "vows": "VOWSVERSION"
+  },
+  "devDependencies": {},
+  "scripts": {},
+  "engines": {
+    "node": ">=0.6.0"
+  },
+  "_id": "GROUPID.ARTIFACTID@ARTIFACTVERSION",
+  "optionalDependencies": {},
+  "_engineSupported": true,
+  "_npmVersion": "NPMVERSION",
+  "_nodeVersion": "NODEVERSION",
+  "_defaultsLoaded": false,
+  "_from": ""
+}

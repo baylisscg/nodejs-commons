@@ -1,0 +1,34 @@
+{
+  "name": "nodejs-commons",
+  "version": "0.1.0-SNAPSHOT",
+  "description": "Library of functions used by all Node.js projects in AURIN",
+  "url": "http://aurin.org.au",
+  "keywords": [
+    "aurin",
+    "commons",
+    "cache"
+  ],
+  "author": {
+    "name": "Luca Morandini",
+    "email": "luca.morandini@unimelb.edu.au"
+  },
+  "contributors": [
+  ],
+  "main": "./lib/commons.js",
+  "dependencies": {
+    "express": "y.y.y",
+    "vows": "z.z.z"
+  },
+  "devDependencies": {},
+  "scripts": {},
+  "engines": {
+    "node": ">=0.6.0"
+  },
+  "_id": "au.org.aurin.nodejs-commons@0.1.0-SNAPSHOT",
+  "optionalDependencies": {},
+  "_engineSupported": true,
+  "_npmVersion": "1.1.4",
+  "_nodeVersion": "v0.6.12",
+  "_defaultsLoaded": false,
+  "_from": ""
+}
