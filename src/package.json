@@ -12,14 +12,16 @@
     "name": "Luca Morandini",
     "email": "luca.morandini@unimelb.edu.au"
   },
-  "contributors": [
-  ],
+  "contributors": [],
   "main": "./lib/commons.js",
   "dependencies": {
-    "express": "y.y.y",
-    "vows": "z.z.z"
+    "properties": "0.1.13"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "vows": "0.6.4",
+  	"assert": "0.4.9",
+    "express": "2.5.9"
+  },
   "scripts": {},
   "engines": {
     "node": ">=0.6.0"

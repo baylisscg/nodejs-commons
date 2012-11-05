@@ -6,15 +6,27 @@ Common NodeJS functions library.
 Introduction
 ------------
 
-xxx
+This module contains all Node.js functions that can possiibly be re-used across other modules.
 
 
 Build instructions
 ------------------
 
-To write the packake description (package.json).
+To write the package description (package.json).
 
-  mvn package -Ddeployment=<deployment type> -Dsystem=<system> -Dapplication=nodejs-commons
+  mvn compile -Ddeployment=<deployment type> -Dsystem=<system>
+
   
+To install the package one package.json has been set:
+
+  cd ./src
+  sudo npm link
+  cd ..
+  
+
+Test:
+  
+  mvn test -Ddeployment=<deployment type> -Dsystem=<system>
+
   
 
