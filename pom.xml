@@ -12,8 +12,9 @@
     <nodeVersion>v0.6.12</nodeVersion>
     <npmVersion>1.1.4</npmVersion>
     <expressVersion>2.5.9</expressVersion>
-    <vowsVersion>0.6.4</vowsVersion>
-    <assertVersion>0.4.9</assertVersion>
+    <tracerVersion>0.5.1</tracerVersion>
+    <chaiVersion>1.3.0</chaiVersion>
+    <mochaVersion>1.6.0</mochaVersion>
     <propertiesVersion>0.1.13</propertiesVersion>
   </properties>
 
@@ -62,8 +63,8 @@
             </goals>
             <configuration>
               <target id="test" unless="skipTests">
-                <exec executable="node" dir="./src/test" failonerror="true">
-                  <arg value="test-headers.js"/>
+                <exec executable="mocha" dir="./src" failonerror="true">
+                  <arg value="--no-colors"/>
                 </exec>
               </target>
             </configuration>
@@ -93,10 +94,6 @@
                <outputFile>src/package.json</outputFile>
                <replacements>
                    <replacement>
-                       <token>PROPERTIESVERSION</token>
-                       <value>${propertiesVersion}</value>
-                   </replacement>         
-                   <replacement>
                        <token>GROUPID</token>
                        <value>${project.groupId}</value>
                    </replacement>         
@@ -121,12 +118,20 @@
                        <value>${expressVersion}</value>
                    </replacement>         
                    <replacement>
-                       <token>VOWSVERSION</token>
-                       <value>${vowsVersion}</value>
-                   </replacement>         
+                       <token>TRACERVERSION</token>
+                       <value>${tracerVersion}</value>
+                   </replacement>
                    <replacement>
-                       <token>ASSERTVERSION</token>
-                       <value>${assertVersion}</value>
+                       <token>CHAIVERSION</token>
+                       <value>${chaiVersion}</value>
+                   </replacement>
+                   <replacement>
+                       <token>MOCHAVERSION</token>
+                       <value>${mochaVersion}</value>
+                   </replacement>
+                   <replacement>
+                       <token>PROPERTIESVERSION</token>
+                       <value>${propertiesVersion}</value>
                    </replacement>         
                </replacements>
            </configuration>

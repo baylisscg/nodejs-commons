@@ -2,7 +2,7 @@
   "name": "ARTIFACTID",
   "version": "ARTIFACTVERSION",
   "description": "Library of functions used by all Node.js projects in AURIN",
-  "url": "http://aurin.org.au",
+  "private": true,
   "keywords": [
     "aurin",
     "commons",
@@ -15,12 +15,13 @@
   "contributors": [],
   "main": "./lib/commons.js",
   "dependencies": {
-    "properties": "PROPERTIESVERSION"
+    "properties": "PROPERTIESVERSION",
+    "tracer": "TRACERVERSION"
   },
   "devDependencies": {
-    "vows": "VOWSVERSION",
-  	"assert": "ASSERTVERSION",
-    "express": "EXPRESSVERSION"
+    "express": "EXPRESSVERSION",
+    "chai": "CHAIVERSION",
+    "mocha": "MOCHAVERSION"
   },
   "scripts": {},
   "engines": {

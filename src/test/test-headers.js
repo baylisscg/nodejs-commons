@@ -1,35 +1,38 @@
-var Properties = require("properties"), vows = require("vows");
-var assert = require("assert"), commons = require("../lib/commons");
-var express= require("express");
-var propStore = (new Properties()).load(process.env.AURIN_DIR
-		+ "/nodejs-commons-combined.properties", function(err) {
-	if (err != null) {
-		console.log(err);
-		return;
-	}
-	startTest(this);
-});
+var Properties = require("properties");
+var chai = require("chai");
+var assert = chai.assert;
+var should = chai.should();
+var commons = require("../lib/commons");
 
-function startTest(props) {
-	commons.setup(props);
-	vows.describe("properties").addBatch({
-		"when requesting max-age" : {
-			topic : function() {
-				return props.get("maxage.default");
-			},
-			"we get something" : function(topic) {
-				assert.notEqual(topic, null);
+describe("Logging", function() {
+
+	before(function(done) {
+		(new Properties()).load(process.env.AURIN_DIR
+				+ "/nodejs-commons-combined.properties", function(err) {
+			if (err != null) {
+				console.log(err);
+				done(err);
+				return;
 			}
-		},
-		"when calling fuction of the library " : {
-			topic : function() {
-				return {setObjectResponse: commons.setObjectResponse, 
-					setRecordsetResponse: commons.setRecordsetResponse};
-			},
-			"those functions are defined" : function(topic) {
-				assert.notEqual(topic.setObjectResponse, undefined);
-				assert.notEqual(topic.setRecordsetResponse, undefined);
-			}
-		}
-	}).run();
-}
+			commons.setup(this);
+			done();
+		});
+	});
+
+	describe("When a property is requested", function() {
+		it("the property exists", function() {
+			should.exist(commons.props.get("maxage.default"),
+					"max-age does not exist");
+		});
+	});
+
+	describe("When commons methods are called", function() {
+		it("the methods exist", function() {
+			should.exist(commons.setObjectResponse,
+					"setObjectResponse does not exist");
+			should.exist(commons.setRecordsetResponse,
+					"setRecordsetResponse does not exist");
+		});
+	});
+
+});
