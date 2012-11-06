@@ -63,7 +63,7 @@
             </goals>
             <configuration>
               <target id="test" unless="skipTests">
-                <exec executable="mocha" dir="./src" failonerror="true">
+                <exec executable="mocha" dir="src" failonerror="true">
                   <arg value="--no-colors"/>
                 </exec>
               </target>
