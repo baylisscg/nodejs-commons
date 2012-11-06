@@ -9,6 +9,17 @@ Introduction
 This module contains all Node.js functions that can possiibly be re-used across other modules.
 
 
+API
+---
+
+Functions:
+* setObjectResponse
+* setRecordsetResponse
+
+Objects:
+* logger: tracer logging object
+
+
 Build instructions
 ------------------
 

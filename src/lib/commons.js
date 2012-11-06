@@ -8,8 +8,14 @@
  * Setup of component
  * @param props properties object
  */
-exports.setup = function (props) {
-    this.props= props;
+exports.setup = function (properties) {
+    this.properties= properties;
+    this.logger = require("tracer").console(
+        {
+            format : "{{timestamp}} <{{title}}> {{message}} (in {{file}}:{{line}})",
+            dateformat : "HH:MM:ss.L",
+            level: properties.get("log.level")
+        });    
     return this;
 };
 
@@ -26,7 +32,7 @@ exports.setObjectResponse = function(args) {
 	var json = JSON.stringify(args.obj);
   var headers= (args.headers !== undefined) ? args.headers : response.headers;
   var status= (args.status !== undefined) ? args.status : 200;
-  var maxAge= ((args.maxAge !== undefined) ? args.maxAge : props.get("maxage.default"));
+  var maxAge= ((args.maxAge !== undefined) ? args.maxAge : properties.get("maxage.default"));
   var contentType= (args.contentType !== undefined) ? args.contentType : "application/json";
   
 	headers["status"] = args.status;
@@ -47,7 +53,7 @@ exports.setObjectResponse = function(args) {
  * @param maxAge    Max age of cache (default value if parameter is missing)
  */
 exports.setRecordsetResponse = function(args) {
-  var maxAge= ((args.maxAge !== undefined) ? args.maxAge : props.get("maxage.default"));
+  var maxAge= ((args.maxAge !== undefined) ? args.maxAge : properties.get("maxage.default"));
   var contentType= (args.contentType !== undefined) ? args.contentType : "application/json";
   
 	args.response.writeHead(args.docs.headers.status, {
