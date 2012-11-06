@@ -13,6 +13,7 @@ API
 ---
 
 Functions:
+* setup
 * setObjectResponse
 * setRecordsetResponse
 

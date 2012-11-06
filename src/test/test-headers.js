@@ -4,19 +4,15 @@ var assert = chai.assert;
 var should = chai.should();
 var commons = require("../lib/commons");
 
-describe("Logging", function() {
+describe("Headers", function() {
 
 	before(function(done) {
-		(new Properties()).load(process.env.AURIN_DIR
-				+ "/nodejs-commons-combined.properties", function(err) {
-			if (err != null) {
-				console.log(err);
-				done(err);
-				return;
-			}
-			commons.setup(this);
-			done();
-		});
+			commons.setup(process.env.AURIN_DIR + "/nodejs-commons-combined.properties", 
+					function (obj) {
+						commons= obj;
+						done();
+					}
+			);
 	});
 
 	describe("When a property is requested", function() {
