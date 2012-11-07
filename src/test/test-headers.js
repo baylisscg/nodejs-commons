@@ -17,7 +17,7 @@ describe("Headers", function() {
 
 	describe("When a property is requested", function() {
 		it("the property exists", function() {
-			should.exist(commons.properties.get("maxage.default"),
+			should.exist(commons.getProperty("maxage.default"),
 					"max-age does not exist");
 		});
 	});

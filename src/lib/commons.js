@@ -5,6 +5,7 @@
  */
 
 var Properties = require("properties");
+var commons= exports;
 
 /**
  * Setup of component
@@ -15,7 +16,7 @@ var Properties = require("properties");
  *          Function called back when the object is initialized, the object
  *          itself is passed as parameter
  */
-exports.setup = function(propertiesFile, callback) {
+commons.setup = function(propertiesFile, callback) {
 	var that = this;
 	(new Properties()).load(propertiesFile, function(err) {
 		if (err != null) {
@@ -30,6 +31,15 @@ exports.setup = function(propertiesFile, callback) {
 		that.properties = this;
 		callback(that);
 	});
+};
+
+/**
+ * Returns a property value given its name
+ * 
+ * @param propertyName
+ */
+commons.getProperty = function(propertyName) {
+	return commons.properties.get(propertyName);
 };
 
 /**
@@ -49,12 +59,11 @@ exports.setup = function(propertiesFile, callback) {
  * @param maxAge
  *          Max age of cache (default value if parameter is missing)
  */
-exports.setObjectResponse = function(args) {
+commons.setObjectResponse = function(args) {
 	var json = JSON.stringify(args.obj);
 	var headers = (args.headers !== undefined) ? args.headers : response.headers;
 	var status = (args.status !== undefined) ? args.status : 200;
-	var maxAge = ((args.maxAge !== undefined) ? args.maxAge : properties
-			.get("maxage.default"));
+	var maxAge = ((args.maxAge !== undefined) ? args.maxAge : commons.getProperty("maxage.default"));
 	var contentType = (args.contentType !== undefined) ? args.contentType
 			: "application/json";
 
@@ -80,9 +89,8 @@ exports.setObjectResponse = function(args) {
  * @param maxAge
  *          Max age of cache (default value if parameter is missing)
  */
-exports.setRecordsetResponse = function(args) {
-	var maxAge = ((args.maxAge !== undefined) ? args.maxAge : properties
-			.get("maxage.default"));
+commons.setRecordsetResponse = function(args) {
+	var maxAge = ((args.maxAge !== undefined) ? args.maxAge : commons.getProperty("maxage.default"));
 	var contentType = (args.contentType !== undefined) ? args.contentType
 			: "application/json";
 
@@ -95,3 +103,4 @@ exports.setRecordsetResponse = function(args) {
 	});
 	args.response.end(JSON.stringify(args.docs));
 };
+
