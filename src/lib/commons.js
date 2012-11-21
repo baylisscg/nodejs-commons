@@ -5,7 +5,7 @@
  */
 
 var Properties = require("properties");
-var commons= exports;
+var commons = exports;
 
 /**
  * Setup of component
@@ -51,29 +51,24 @@ commons.getProperty = function(propertyName) {
  *          Response
  * @param status
  *          Status of the response (200 if parameter is missing)
- * @param headers
- *          Headers to be used (response's headers will be used if parameter is
- *          missing)
  * @param contentType
  *          Content type (application/json if parameter id missing)
  * @param maxAge
  *          Max age of cache (default value if parameter is missing)
  */
 commons.setObjectResponse = function(args) {
-	var json = JSON.stringify(args.obj);
-	var headers = (args.headers !== undefined) ? args.headers : response.headers;
 	var status = (args.status !== undefined) ? args.status : 200;
-	var maxAge = ((args.maxAge !== undefined) ? args.maxAge : commons.getProperty("maxage.default"));
-	var contentType = (args.contentType !== undefined) ? args.contentType
-			: "application/json";
+	var maxAge = ((args.maxAge !== undefined) ? args.maxAge : commons
+			.getProperty("maxage.default"));
 
-	headers["status"] = args.status;
-	headers["content-length"] = json.length;
-	headers["content-type"] = contentType;
-	headers["last-modified"] = new Date();
-	headers["cache-control"] = "max-age=" + maxAge;
-	args.response.writeHead(status, headers);
-	args.response.end(json);
+	args.response.header("Connection", "keep-alive");
+	args.response.header("Content-Length", args.obj.length);
+	args.response.header("Transfer-Encoding", "chunked");
+	args.response.header("Last-Modified", new Date());
+	args.response.header("Cache-Control", "max-age=" + maxAge);
+	args.response.status(status);
+	args.response.json(args.obj);
+	args.response.end();
 };
 
 /**
@@ -90,17 +85,14 @@ commons.setObjectResponse = function(args) {
  *          Max age of cache (default value if parameter is missing)
  */
 commons.setRecordsetResponse = function(args) {
-	var maxAge = ((args.maxAge !== undefined) ? args.maxAge : commons.getProperty("maxage.default"));
-	var contentType = (args.contentType !== undefined) ? args.contentType
-			: "application/json";
+	var maxAge = ((args.maxAge !== undefined) ? args.maxAge : commons
+			.getProperty("maxage.default"));
 
-	args.response.writeHead(args.docs.headers.status, {
-		"Connection" : "keep-alive",
-		"Transfer-Encoding" : "chunked",
-		"Content-Type" : contentType,
-		"Last-Modified" : new Date(),
-		"Cache-Control" : "max-age=" + maxAge
-	});
-	args.response.end(JSON.stringify(args.docs));
+	args.response.header("Connection", "keep-alive");
+	args.response.header("Transfer-Encoding", "chunked");
+	args.response.header("Last-Modified", new Date());
+	args.response.header("Cache-Control", "max-age=" + maxAge);
+	args.response.status(args.docs.headers.status);
+	args.response.json(args.docs);
+	args.response.end();
 };
-
