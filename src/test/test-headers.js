@@ -1,6 +1,7 @@
 var Properties = require("properties");
 var chai = require("chai");
 var assert = chai.assert;
+var expect = chai.expect;
 var should = chai.should();
 var commons = require("../lib/commons");
 
@@ -19,6 +20,13 @@ describe("Headers", function() {
 		it("the property exists", function() {
 			should.exist(commons.getProperty("maxage.default"),
 					"max-age does not exist");
+		});
+	});
+
+	describe("When a property is set", function() {
+		it("the property is really changed", function() {
+			commons.setProperty("maxage.default", 1234);
+			expect(commons.getProperty("maxage.default")).to.equal("1234");
 		});
 	});
 

@@ -43,6 +43,17 @@ commons.getProperty = function(propertyName) {
 };
 
 /**
+ * Sets a property value given its name
+ * 
+ * @param propertyName
+ * @param propertyValue
+ */
+commons.setProperty = function(propertyName, propertyValue) {
+	commons.properties.set(propertyName, propertyValue);
+};
+
+
+/**
  * Constructs a response for the reutrn of a JSON object
  * 
  * @param obj
