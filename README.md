@@ -32,7 +32,7 @@ To write the package description (package.json).
 To install the package one package.json has been set:
 
   cd ./src
-  sudo npm link
+  npm link
   cd ..
   
 

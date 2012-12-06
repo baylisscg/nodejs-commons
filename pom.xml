@@ -23,7 +23,24 @@
     <artifactId>aurin-project</artifactId>
     <version>0.2.3</version>
   </parent>
-  
+
+  <repositories>
+    <repository>
+      <id>aurin</id>
+      <url>https://mvn.aurin.org.au/nexus/content/repositories/stable/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+    </repository>
+    <repository>
+      <id>aurin-snapshots</id>
+      <url>https://mvn.aurin.org.au/nexus/content/repositories/snapshots/</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+
   <dependencies>
 
   </dependencies>
@@ -77,66 +94,66 @@
         <artifactId>properties-maven-plugin</artifactId>
       </plugin>
 
-       <plugin>
-           <groupId>com.google.code.maven-replacer-plugin</groupId>
-           <artifactId>replacer</artifactId>
-           <version>1.5.1</version>
-           <executions>
-               <execution>
-                   <phase>compile</phase>
-                   <goals>
-                       <goal>replace</goal>
-                   </goals>                   
-               </execution>
-           </executions>
-           <configuration>
-               <file>src/package.template.json</file>
-               <outputFile>src/package.json</outputFile>
-               <replacements>
-                   <replacement>
-                       <token>GROUPID</token>
-                       <value>${project.groupId}</value>
-                   </replacement>         
-                   <replacement>
-                       <token>ARTIFACTID</token>
-                       <value>${project.artifactId}</value>
-                   </replacement>         
-                   <replacement>
-                       <token>ARTIFACTVERSION</token>
-                       <value>${project.version}</value>
-                   </replacement>         
-                   <replacement>
-                       <token>NODEVERSION</token>
-                       <value>${nodeVersion}</value>
-                   </replacement>         
-                   <replacement>
-                       <token>NPMVERSION</token>
-                       <value>${npmVersion}</value>
-                   </replacement>         
-                   <replacement>
-                       <token>EXPRESSVERSION</token>
-                       <value>${expressVersion}</value>
-                   </replacement>         
-                   <replacement>
-                       <token>TRACERVERSION</token>
-                       <value>${tracerVersion}</value>
-                   </replacement>
-                   <replacement>
-                       <token>CHAIVERSION</token>
-                       <value>${chaiVersion}</value>
-                   </replacement>
-                   <replacement>
-                       <token>MOCHAVERSION</token>
-                       <value>${mochaVersion}</value>
-                   </replacement>
-                   <replacement>
-                       <token>PROPERTIESVERSION</token>
-                       <value>${propertiesVersion}</value>
-                   </replacement>         
-               </replacements>
-           </configuration>
-       </plugin>
-       
+      <plugin>
+        <groupId>com.google.code.maven-replacer-plugin</groupId>
+        <artifactId>replacer</artifactId>
+        <version>1.5.1</version>
+        <executions>
+          <execution>
+            <phase>compile</phase>
+            <goals>
+              <goal>replace</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <file>src/package.template.json</file>
+          <outputFile>src/package.json</outputFile>
+          <replacements>
+            <replacement>
+              <token>GROUPID</token>
+              <value>${project.groupId}</value>
+            </replacement>
+            <replacement>
+              <token>ARTIFACTID</token>
+              <value>${project.artifactId}</value>
+            </replacement>
+            <replacement>
+              <token>ARTIFACTVERSION</token>
+              <value>${project.version}</value>
+            </replacement>
+            <replacement>
+              <token>NODEVERSION</token>
+              <value>${nodeVersion}</value>
+            </replacement>
+            <replacement>
+              <token>NPMVERSION</token>
+              <value>${npmVersion}</value>
+            </replacement>
+            <replacement>
+              <token>EXPRESSVERSION</token>
+              <value>${expressVersion}</value>
+            </replacement>
+            <replacement>
+              <token>TRACERVERSION</token>
+              <value>${tracerVersion}</value>
+            </replacement>
+            <replacement>
+              <token>CHAIVERSION</token>
+              <value>${chaiVersion}</value>
+            </replacement>
+            <replacement>
+              <token>MOCHAVERSION</token>
+              <value>${mochaVersion}</value>
+            </replacement>
+            <replacement>
+              <token>PROPERTIESVERSION</token>
+              <value>${propertiesVersion}</value>
+            </replacement>
+          </replacements>
+        </configuration>
+      </plugin>
+
     </plugins>
 
   </build>
