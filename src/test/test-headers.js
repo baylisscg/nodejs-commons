@@ -26,7 +26,7 @@ describe("Headers", function() {
 	describe("When a property is set", function() {
 		it("the property is really changed", function() {
 			commons.setProperty("maxage.default", 1234);
-			expect(commons.getProperty("maxage.default")).to.equal("1234");
+			expect(commons.getProperty("maxage.default")).to.equal(1234);
 		});
 	});
 

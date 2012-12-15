@@ -18,7 +18,7 @@ var commons = exports;
  */
 commons.setup = function(propertiesFile, callback) {
 	var that = this;
-	(new Properties()).load(propertiesFile, function(err) {
+	Properties.load(propertiesFile, function(err, properties) {
 		if (err != null) {
 			console.log(err);
 			callback(null);
@@ -26,9 +26,9 @@ commons.setup = function(propertiesFile, callback) {
 		that.logger = require("tracer").console({
 			format : "{{timestamp}} <{{title}}> {{message}} (in {{file}}:{{line}})",
 			dateformat : "HH:MM:ss.L",
-			level : this.get("log.level")
+			level : properties["log.level"]
 		});
-		that.properties = this;
+		that.properties = properties;
 		callback(that);
 	});
 };
@@ -39,7 +39,7 @@ commons.setup = function(propertiesFile, callback) {
  * @param propertyName
  */
 commons.getProperty = function(propertyName) {
-	return commons.properties.get(propertyName);
+	return commons.properties[propertyName];
 };
 
 /**
@@ -49,7 +49,7 @@ commons.getProperty = function(propertyName) {
  * @param propertyValue
  */
 commons.setProperty = function(propertyName, propertyValue) {
-	commons.properties.set(propertyName, propertyValue);
+	commons.properties[propertyName]= propertyValue;
 };
 
 
