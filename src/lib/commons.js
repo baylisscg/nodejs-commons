@@ -3,8 +3,7 @@
  * 
  * Library of common functions used by AURIN
  */
-
-var Properties = require("properties");
+"use strict";
 var commons = exports;
 
 /**
@@ -18,7 +17,7 @@ var commons = exports;
  */
 commons.setup = function(propertiesFile, callback) {
 	var that = this;
-	Properties.load(propertiesFile, function(err, properties) {
+	require("properties").load(propertiesFile, function(err, properties) {
 		if (err != null) {
 			console.log(err);
 			callback(null);
