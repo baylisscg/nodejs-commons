@@ -3,7 +3,7 @@ var chai = require("chai");
 var assert = chai.assert;
 var expect = chai.expect;
 var should = chai.should();
-var commons = require("../lib/commons");
+var commons = require("../commons");
 
 describe("Headers", function() {
 

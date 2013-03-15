@@ -2,7 +2,7 @@ var Properties = require("properties");
 var chai = require("chai");
 var assert = chai.assert;
 var should = chai.should();
-var commons = require("../lib/commons");
+var commons = require("../commons");
 
 describe("Logging", function() {
 

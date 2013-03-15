@@ -25,20 +25,14 @@ Build instructions
 ------------------
 
 To write the package description (package.json).
-
-  mvn compile -Ddeployment=<deployment type> -Dsystem=<system>
+  `mvn compile -Ddeployment=<deployment type> -Dsystem=<system>`
 
   
 To install the package one package.json has been set:
-
-  cd ./src
-  npm link
-  cd ..
-  
+  `npm insall`
 
 Test:
-  
-  mvn test -Ddeployment=<deployment type> -Dsystem=<system>
+  `mvn test -Ddeployment=<deployment type> -Dsystem=<system>`
 
   
 
