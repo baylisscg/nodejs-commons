@@ -29,7 +29,7 @@ To write the package description (package.json).
 
   
 To install the package one package.json has been set:
-  `npm insall`
+  `npm install`
 
 Test:
   `mvn test -Ddeployment=<deployment type> -Dsystem=<system>`
