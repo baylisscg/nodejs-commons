@@ -9,7 +9,7 @@
 
   <properties>
     <version>${project.version}</version>
-    <nodeVersion>v0.6.12</nodeVersion>
+    <nodeVersion>0.6.x</nodeVersion>
     <npmVersion>1.1.4</npmVersion>
     <expressVersion>2.5.9</expressVersion>
     <tracerVersion>0.5.1</tracerVersion>

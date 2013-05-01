@@ -25,13 +25,13 @@
   },
   "scripts": {},
   "engines": {
-    "node": "v0.6.12"
+    "node": "0.6.x"
   },
   "_id": "au.org.aurin.nodejs-commons@0.3.1-SNAPSHOT",
   "optionalDependencies": {},
   "_engineSupported": true,
   "_npmVersion": "1.1.4",
-  "_nodeVersion": "v0.6.12",
+  "_nodeVersion": "0.6.x",
   "_defaultsLoaded": false,
   "_from": ""
 }
