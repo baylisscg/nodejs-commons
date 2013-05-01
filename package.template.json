@@ -25,7 +25,7 @@
   },
   "scripts": {},
   "engines": {
-    "node": ">=0.6.0"
+    "node": "NODEVERSION"
   },
   "_id": "GROUPID.ARTIFACTID@ARTIFACTVERSION",
   "optionalDependencies": {},
