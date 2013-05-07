@@ -84,10 +84,9 @@ commons.setObjectResponse = function(args) {
  * Constructs a response from a set of documents returned by CouchDB
  * 
  * @param response
+ *          Response
  * @param docs
  *          Docs to be returned (this object is expected to have headers)
- * @param response
- *          Response
  * @param contentType
  *          Content type (application/json if parameter id missing)
  * @param maxAge
@@ -105,4 +104,29 @@ commons.setRecordsetResponse = function(args) {
 	args.response.json(args.docs);
 	args.response.end();
 };
+
+/**
+ * Returns true if mimetype is JSON
+ * @param mime-type to test
+ */
+commons.isJSON = function(mimetype) {
+	return (mimetype.match(/.*application\/.*json.*/) !== null) ? true : false; 	
+};
+
+/**
+ * Returns true if mimetype is GeoJSON
+ * @param mime-type to test
+ */
+commons.isGeoJSON = function(mimetype) {
+	return (mimetype.match(/.*application\/geo\+json.*/) !== null) ? true : false; 	
+};
+
+/**
+ * Returns true if mimetype is JSONGraph
+ * @param mime-type to test
+ */
+commons.isJSONGraph = function(mimetype) {
+	return (mimetype.match(/.*application\/graph\+json.*/) !== null) ? true : false; 	
+};
+
 

@@ -39,4 +39,30 @@ describe("Headers", function() {
 		});
 	});
 
+	describe("When a MIME type is GeoJSON", function() {
+		it("GeoJSON is recognised", function() {
+			expect(commons.isGeoJSON("application/json")).to.be.false;
+			expect(commons.isGeoJSON("application/graph+json")).to.be.false;
+			expect(commons.isGeoJSON("application/geo+json")).to.be.true;
+			expect(commons.isGeoJSON("application/text; application/geo+json; text/html")).to.be.true;
+		});
+	});
+
+	describe("When a MIME type is JSONGraph", function() {
+		it("GeoJSON is recognised", function() {
+			expect(commons.isJSONGraph("application/json")).to.be.false;
+			expect(commons.isJSONGraph("application/graph+json")).to.be.true;
+			expect(commons.isJSONGraph("application/geo+json")).to.be.false;
+			expect(commons.isJSONGraph("application/text; application/graph+json; text/html")).to.be.true;
+		});
+	});
+
+	describe("When a MIME type is JSON", function() {
+		it("JSON is recognised", function() {
+			expect(commons.isJSON("application/json")).to.be.true;
+			expect(commons.isJSON("application/geo+json")).to.be.true;
+			expect(commons.isJSON("application/text; application/graph+json; text/html")).to.be.true;
+		});
+	});
+
 });
