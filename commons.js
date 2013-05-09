@@ -81,31 +81,6 @@ commons.setObjectResponse = function(args) {
 };
 
 /**
- * Constructs a response from a set of documents returned by CouchDB
- * 
- * @param response
- *          Response
- * @param docs
- *          Docs to be returned (this object is expected to have headers)
- * @param contentType
- *          Content type (application/json if parameter id missing)
- * @param maxAge
- *          Max age of cache (default value if parameter is missing)
- */
-commons.setRecordsetResponse = function(args) {
-	var maxAge = ((args.maxAge !== undefined) ? args.maxAge : commons
-			.getProperty("maxage.default"));
-
-	args.response.header("Connection", "keep-alive");
-	args.response.header("Transfer-Encoding", "chunked");
-	args.response.header("Last-Modified", new Date());
-	args.response.header("Cache-Control", "max-age=" + maxAge);
-	args.response.status(args.docs.headers.status);
-	args.response.json(args.docs);
-	args.response.end();
-};
-
-/**
  * Returns true if mimetype is JSON
  * @param mime-type to test
  */
