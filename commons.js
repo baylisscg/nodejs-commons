@@ -82,26 +82,40 @@ commons.setObjectResponse = function(args) {
 
 /**
  * Returns true if mimetype is JSON
- * @param mime-type to test
+ * 
+ * @param mime-type
+ *          to test
  */
 commons.isJSON = function(mimetype) {
-	return (mimetype.match(/.*application\/.*json.*/) !== null) ? true : false; 	
+	if (!mimetype) {
+		return false;
+	}
+	return (mimetype.match(/.*application\/.*json.*/) !== null) ? true : false;
 };
 
 /**
  * Returns true if mimetype is GeoJSON
- * @param mime-type to test
+ * 
+ * @param mime-type
+ *          to test
  */
 commons.isGeoJSON = function(mimetype) {
-	return (mimetype.match(/.*application\/geo\+json.*/) !== null) ? true : false; 	
+	if (!mimetype) {
+		return false;
+	}
+	return (mimetype.match(/.*application\/geo\+json.*/) !== null) ? true : false;
 };
 
 /**
  * Returns true if mimetype is JSONGraph
- * @param mime-type to test
+ * 
+ * @param mime-type
+ *          to test
  */
 commons.isJSONGraph = function(mimetype) {
-	return (mimetype.match(/.*application\/graph\+json.*/) !== null) ? true : false; 	
+	if (!mimetype) {
+		return false;
+	}
+	return (mimetype.match(/.*application\/graph\+json.*/) !== null) ? true
+			: false;
 };
-
-
