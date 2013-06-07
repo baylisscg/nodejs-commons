@@ -1,0 +1,5 @@
+/target
+/node_modules
+/compile.sh
+/test.sh
+/t.sh

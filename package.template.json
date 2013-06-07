@@ -20,8 +20,7 @@
   },
   "devDependencies": {
     "express": "EXPRESSVERSION",
-    "chai": "CHAIVERSION",
-    "mocha": "MOCHAVERSION"
+    "chai": "CHAIVERSION"
   },
   "scripts": {},
   "engines": {

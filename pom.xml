@@ -5,17 +5,16 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>au.org.aurin</groupId>
   <artifactId>nodejs-commons</artifactId>
-  <version>0.3.1</version>
+  <version>0.3.2-SNAPSHOT</version>
 
   <properties>
     <version>${project.version}</version>
-    <nodeVersion>0.6.x</nodeVersion>
-    <npmVersion>1.1.4</npmVersion>
-    <expressVersion>2.5.9</expressVersion>
+    <nodeVersion>v0.10.10</nodeVersion>
+    <npmVersion>1.2.25</npmVersion>
+    <expressVersion>3.2.6</expressVersion>
     <tracerVersion>0.5.1</tracerVersion>
-    <chaiVersion>1.3.0</chaiVersion>
-    <mochaVersion>1.6.0</mochaVersion>
-    <propertiesVersion>0.2.0</propertiesVersion>
+    <chaiVersion>1.6.1</chaiVersion>
+    <propertiesVersion>0.3.3</propertiesVersion>
   </properties>
 
   <parent>
