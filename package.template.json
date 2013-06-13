@@ -16,10 +16,10 @@
   "main": "./commons.js",
   "dependencies": {
     "properties": "PROPERTIESVERSION",
+    "express": "EXPRESSVERSION",
     "tracer": "TRACERVERSION"
   },
   "devDependencies": {
-    "express": "EXPRESSVERSION",
     "chai": "CHAIVERSION"
   },
   "scripts": {},

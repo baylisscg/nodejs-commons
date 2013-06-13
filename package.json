@@ -15,22 +15,22 @@
   "contributors": [],
   "main": "./commons.js",
   "dependencies": {
-    "properties": "0.3.3",
-    "tracer": "0.5.1"
+    "properties": "0.3.x",
+    "express": "3.2.x",
+    "tracer": "0.5.x"
   },
   "devDependencies": {
-    "express": "3.2.6",
-    "chai": "1.6.1"
+    "chai": "1.6.x"
   },
   "scripts": {},
   "engines": {
-    "node": "v0.10.10"
+    "node": "v0.10.x"
   },
   "_id": "au.org.aurin.nodejs-commons@0.3.2-SNAPSHOT",
   "optionalDependencies": {},
   "_engineSupported": true,
-  "_npmVersion": "1.2.25",
-  "_nodeVersion": "v0.10.10",
+  "_npmVersion": "1.2.x",
+  "_nodeVersion": "v0.10.x",
   "_defaultsLoaded": false,
   "_from": ""
 }

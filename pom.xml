@@ -9,12 +9,12 @@
 
   <properties>
     <version>${project.version}</version>
-    <nodeVersion>v0.10.10</nodeVersion>
-    <npmVersion>1.2.25</npmVersion>
-    <expressVersion>3.2.6</expressVersion>
-    <tracerVersion>0.5.1</tracerVersion>
-    <chaiVersion>1.6.1</chaiVersion>
-    <propertiesVersion>0.3.3</propertiesVersion>
+    <nodeVersion>v0.10.x</nodeVersion>
+    <npmVersion>1.2.x</npmVersion>
+    <expressVersion>3.2.x</expressVersion>
+    <tracerVersion>0.5.x</tracerVersion>
+    <chaiVersion>1.6.x</chaiVersion>
+    <propertiesVersion>0.3.x</propertiesVersion>
   </properties>
 
   <parent>
