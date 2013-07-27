@@ -52,7 +52,8 @@ commons.setProperty = function(propertyName, propertyValue) {
 };
 
 /**
- * Constructs a response for the reutrn of a JSON object
+ * Constructs a response for the return of a JSON object or, if the content-type
+ * header is not application/json, of a string
  * 
  * @param obj
  *          Object to be returned
@@ -76,7 +77,12 @@ commons.setObjectResponse = function(args) {
 	args.response.header("Last-Modified", new Date());
 	args.response.header("Cache-Control", "max-age=" + maxAge);
 	args.response.status(status);
-	args.response.json(args.obj);
+	if (commons.isJSON(args.contentType)) {
+		args.response.json(args.obj);
+	} else {
+		args.response.header("Content-Type", args.contentType);
+		args.response.send(args.obj);
+	}
 	args.response.end();
 };
 
