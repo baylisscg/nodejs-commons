@@ -125,3 +125,35 @@ commons.isJSONGraph = function(mimetype) {
 	return (mimetype.match(/.*application\/graph\+json.*/) !== null) ? true
 			: false;
 };
+
+/**
+ * Writes logs about req request
+ */
+commons.logRequest = function(req) {
+	var util = require('util');
+	var mem = util.inspect(process.memoryUsage());
+
+	commons.logger.debug("Started request from: %s method: %s url: %s",
+			req.connection.remoteAddress, req.method, req.url);
+	req.on("end", function() {
+		commons.logger.debug("Completed request from: %s method: %s url: %s",
+				req.connection.remoteAddress, req.method, req.url);
+		commons.logger.debug("Heap total (MB): %s Heap used (MB): %s", commons
+				.getTotalMemoryMB(), commons.getTotalMemoryMB());
+	});
+};
+
+/*
+ * Returns current usage of memory in MB  
+ */
+commons.getUsedMemoryMB = function() {
+	return Math.round(process.memoryUsage().heapUsed / (1024 * 1024));
+};
+
+/*
+ * Returns total usage of memory in MB  
+ */
+commons.getTotalMemoryMB = function() {
+	return Math.round(process.memoryUsage().heapTotal / (1024 * 1024));
+};
+
