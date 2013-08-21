@@ -138,8 +138,8 @@ commons.logRequest = function(req) {
 	req.on("end", function() {
 		commons.logger.debug("Completed request from: %s method: %s url: %s",
 				req.connection.remoteAddress, req.method, req.url);
-		commons.logger.debug("Heap total (MB): %s Heap used (MB): %s", commons
-				.getTotalMemoryMB(), commons.getTotalMemoryMB());
+		commons.logger.debug("Heap: %s (MB), RSS (MB): %s", commons
+				.getUsedMemoryMB(), commons.getRSSMemoryMB());
 	});
 };
 
@@ -157,3 +157,9 @@ commons.getTotalMemoryMB = function() {
 	return Math.round(process.memoryUsage().heapTotal / (1024 * 1024));
 };
 
+/*
+ * Returns Resident-Set-Size in MB  
+ */
+commons.getRSSMemoryMB = function() {
+	return Math.round(process.memoryUsage().rss / (1024 * 1024));
+};
