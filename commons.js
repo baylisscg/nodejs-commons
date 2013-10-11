@@ -65,6 +65,8 @@ commons.setProperty = function(propertyName, propertyValue) {
  *          Content type (application/json if parameter id missing)
  * @param maxAge
  *          Max age of cache (default value if parameter is missing)
+ * @param noCache
+ *          If true, does not add cache-control headers
  */
 commons.setObjectResponse = function(args) {
 	var status = (args.status !== undefined) ? args.status : 200;
@@ -75,7 +77,9 @@ commons.setObjectResponse = function(args) {
 	args.response.header("Content-Length", args.obj.length);
 	args.response.header("Transfer-Encoding", "chunked");
 	args.response.header("Last-Modified", new Date());
-	args.response.header("Cache-Control", "max-age=" + maxAge);
+	if (!args.noCache) {
+		args.response.header("Cache-Control", "max-age=" + maxAge);
+	}
 	args.response.status(status);
 	if (commons.isJSON(args.contentType)) {
 		args.response.json(args.obj);
