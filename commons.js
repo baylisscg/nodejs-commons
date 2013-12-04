@@ -137,13 +137,13 @@ commons.logRequest = function(req) {
 	var util = require('util');
 	var mem = util.inspect(process.memoryUsage());
 
-	commons.logger.debug("Started request from: %s method: %s url: %s",
-			req.connection.remoteAddress, req.method, req.url);
+	commons.logger.debug("Process %s started request method: %s url: %s",
+			process.pid, req.method, req.url);
 	req.on("end", function() {
-		commons.logger.debug("Completed request from: %s method: %s url: %s",
-				req.connection.remoteAddress, req.method, req.url);
 		commons.logger.debug("Heap: %s (MB), RSS (MB): %s", commons
 				.getUsedMemoryMB(), commons.getRSSMemoryMB());
+		commons.logger.debug("Process %s completed request url: %s", process.pid,
+				req.method, req.url);
 	});
 };
 
