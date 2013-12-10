@@ -5,10 +5,10 @@ var expect = chai.expect;
 var should = chai.should();
 var commons = require("../commons");
 
-describe("Headers", function() {
+describe("test-unit.js", function() {
 
 	before(function(done) {
-			commons.setup(process.env.AURIN_DIR + "/nodejs-commons-combined.properties", 
+			commons.setup("./test/test.properties", 
 					function (obj) {
 						commons= obj;
 						done();
@@ -30,6 +30,18 @@ describe("Headers", function() {
 		});
 	});
 
+	describe("When a property with a default specified in the propertes file is requested", function() {
+		it("the property has the value defined in the file", function() {
+			expect(2).equal(Number(commons.getProperty("nodejs.cluster.closewaitms")));
+		});
+	});
+
+		describe("When a property with a default NOT specified in the propertes file is requested", function() {
+			it("the property has the default value", function() {
+				expect(1000).equal(Number(commons.getProperty("nodejs.cluster.checkmemoryms")));
+			});
+		});
+		
 	describe("When commons methods are called", function() {
 		it("the methods exist", function() {
 			should.exist(commons.setObjectResponse,
@@ -69,4 +81,14 @@ describe("Headers", function() {
 		});
 	});
 
+	describe("When logging", function() {
+		it("should not raise an exception", function() {
+			try {
+				commons.logger.info("Test %d", 1);
+				assert.equal(true, true, "no exception is raised");
+			} catch (e) {
+				assert.equal(true, false, "an exception is raised");
+			}
+		});
+	});	
 });

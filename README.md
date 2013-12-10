@@ -16,6 +16,10 @@ Functions:
 * setup
 * setObjectResponse
 * setRecordsetResponse
+* isJSON
+* isGeoJSON
+* isJSONGraph
+* logRequest
 
 Objects:
 * logger: tracer logging object
@@ -24,9 +28,9 @@ Objects:
 Pre-requirements
 ----------------
 
-* Node.js v0.10.10
-* Mocha 1.10.x should be installed (globally):
-  `npm -g update mocha@1.10.0`
+* Node.js v0.10.x
+* Mocha 1.14.x should be installed (globally):
+  `npm -g update mocha@1.14.0`
 
 
 Installation

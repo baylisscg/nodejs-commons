@@ -6,6 +6,15 @@
 "use strict";
 var commons = exports;
 
+// Default values of properties (they are set in absence of
+// values provided in the file)
+var defaults = {};
+defaults["nodejs.cluster.maxrssmemorymb"] = 1500;
+defaults["nodejs.cluster.closewaitms"] = 20000;
+defaults["nodejs.cluster.checkmemoryms"] = 1000;
+defaults["log.level"]= "info";
+defaults["maxage.default"]= 60;
+
 /**
  * Setup of component
  * 
@@ -17,17 +26,28 @@ var commons = exports;
  */
 commons.setup = function(propertiesFile, callback) {
 	var that = this;
+	
+	// Load properties file
 	require("properties").load(propertiesFile, function(err, properties) {
 		if (err != null) {
 			console.log(err);
 			callback(null);
 		}
+		
+		// Apply defaults
+		that.properties = properties;
+		Object.keys(defaults).forEach(function(prop) {
+			if (!commons.getProperty(prop)) {
+				commons.setProperty(prop, defaults[prop]);
+			}
+		});
+		
+		// Sets the logger
 		that.logger = require("tracer").console({
 			format : "{{timestamp}} <{{title}}> {{message}} (in {{file}}:{{line}})",
 			dateformat : "HH:MM:ss.L",
 			level : properties["log.level"]
 		});
-		that.properties = properties;
 		callback(that);
 	});
 };
@@ -148,21 +168,21 @@ commons.logRequest = function(req) {
 };
 
 /*
- * Returns current usage of memory in MB  
+ * Returns current usage of memory in MB
  */
 commons.getUsedMemoryMB = function() {
 	return Math.round(process.memoryUsage().heapUsed / (1024 * 1024));
 };
 
 /*
- * Returns total usage of memory in MB  
+ * Returns total usage of memory in MB
  */
 commons.getTotalMemoryMB = function() {
 	return Math.round(process.memoryUsage().heapTotal / (1024 * 1024));
 };
 
 /*
- * Returns Resident-Set-Size in MB  
+ * Returns Resident-Set-Size in MB
  */
 commons.getRSSMemoryMB = function() {
 	return Math.round(process.memoryUsage().rss / (1024 * 1024));
