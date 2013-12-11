@@ -13,6 +13,7 @@ API
 ---
 
 Functions:
+* startCluster
 * setup
 * setObjectResponse
 * setRecordsetResponse
@@ -20,6 +21,9 @@ Functions:
 * isGeoJSON
 * isJSONGraph
 * logRequest
+* getUsedMemoryMB
+* getTotalMemoryMB
+* getRSSMemoryMB
 
 Objects:
 * logger: tracer logging object

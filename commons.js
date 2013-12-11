@@ -6,17 +6,106 @@
 "use strict";
 var commons = exports;
 
+var cluster = require("cluster");
+var child_process = require('child_process');
+
 // Default values of properties (they are set in absence of
 // values provided in the file)
 var defaults = {};
 defaults["nodejs.cluster.maxrssmemorymb"] = 1500;
 defaults["nodejs.cluster.closewaitms"] = 20000;
 defaults["nodejs.cluster.checkmemoryms"] = 1000;
-defaults["log.level"]= "info";
-defaults["maxage.default"]= 60;
+defaults["log.level"] = "info";
+defaults["maxage.default"] = 60;
+defaults["aurin.processes"] = 2;
 
 /**
- * Setup of component
+ * Returns the number of processes to spawn. If property aurin.<name>.processes
+ * is 0 one per CPU is spawned, if that property is undefined, aurin.processes
+ * is used instead
+ * 
+ * @param name
+ *          of process
+ * @return number of to spawn
+ */
+commons.getNumberOfProcesses = function(name) {
+	var propValue = (typeof commons.getProperty("aurin." + name + ".processes") === "undefined") ? defaults["aurin.processes"]
+			: commons.getProperty("aurin." + name + ".processes");
+	return (Number(propValue) === 0) ? require("os").cpus().length
+			: Number(propValue);
+};
+
+/*
+ * Spawns a new app and sets up a event handle on a "memoryalarm" event
+ */
+var spawnApp = function() {
+	var worker = cluster.fork();
+
+	worker.on("message", function(msg) {
+
+		// If memoryalarm, message is detected sends a commitsuicide to the process
+		// given in msg
+		if (msg.message === "memoryalarm") {
+			for ( var i in cluster.workers) {
+				var worker = cluster.workers[i];
+				if (worker.process.pid === msg.pid) {
+					worker.send({
+						message : "commitsuicide"
+					});
+				}
+			}
+		}
+	});
+};
+
+/**
+ * Starts a cluster of services
+ * 
+ * @param propertiesFile
+ *          properties file
+ * @param name
+ *          Process's name (the property "aurin." + name + ".processes" will be
+ *          used to get the number of processes to spawn)
+ * @param callback
+ *          Function called back when the object is initialized, the object
+ *          itself is passed as parameter
+ */
+commons.startCluster = function(propertiesFile, name, startServer) {
+
+	// Loads properties
+	commons.setup(propertiesFile, function(commons) {
+
+		if (cluster.isMaster) {
+
+			// Spawns processes
+			var nProcesses = commons.getNumberOfProcesses(name);
+			commons.logger.info("Spawning " + nProcesses + " processes for service "
+					+ name);
+			for (var i = 0; i < nProcesses; i++) {
+				spawnApp();
+			}
+
+			// On disconnection, spawns a new app (unless we are in test mode)
+			cluster.on("disconnect", function() {
+				if (name !== "test") {
+					spawnApp();
+				}
+			});
+
+			/*
+			 * If the process is a worker
+			 */
+		} else {
+			// Starts server
+			startServer(commons, function(commons, app) {
+				commons.logger.info("started!");
+			});
+		}
+	});
+};
+
+/**
+ * Setup of a component
  * 
  * @param propertiesFile
  *          properties file
@@ -26,14 +115,14 @@ defaults["maxage.default"]= 60;
  */
 commons.setup = function(propertiesFile, callback) {
 	var that = this;
-	
+
 	// Load properties file
 	require("properties").load(propertiesFile, function(err, properties) {
 		if (err != null) {
 			console.log(err);
 			callback(null);
 		}
-		
+
 		// Apply defaults
 		that.properties = properties;
 		Object.keys(defaults).forEach(function(prop) {
@@ -41,7 +130,7 @@ commons.setup = function(propertiesFile, callback) {
 				commons.setProperty(prop, defaults[prop]);
 			}
 		});
-		
+
 		// Sets the logger
 		that.logger = require("tracer").console({
 			format : "{{timestamp}} <{{title}}> {{message}} (in {{file}}:{{line}})",
@@ -186,4 +275,23 @@ commons.getTotalMemoryMB = function() {
  */
 commons.getRSSMemoryMB = function() {
 	return Math.round(process.memoryUsage().rss / (1024 * 1024));
+};
+
+/**
+ * Injects the geoclassification endpoint into every Swagger's resource
+ * 
+ * @param resources
+ *          {Object} Resources repo. as loaded with Swagger
+ */
+commons.injectEndpoints = function(resources) {
+	var resourceName;
+	for (resourceName in resources) {
+		if (resources.hasOwnProperty(resourceName)) {
+			var res = resources[resourceName];
+			if (res && typeof res.action === "function"
+					&& typeof res.spec !== "Object") {
+				resources.swagger["add" + res.spec.method].apply(null, [ res ]);
+			}
+		}
+	}
 };
