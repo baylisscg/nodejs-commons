@@ -9,12 +9,7 @@ describe("test-unit.js", function() {
 
 	before(function(done) {
 		console.log("Start of testing...");
-			commons.setup("./test/test.properties", 
-					function (obj) {
-						commons= obj;
-						done();
-					}
-			);
+		done();
 	});
 
 		it("the property exists", function(done) {
@@ -85,16 +80,6 @@ describe("test-unit.js", function() {
 			expect(commons.isJSON("application/json")).to.be.true;
 			expect(commons.isJSON("application/geo+json")).to.be.true;
 			expect(commons.isJSON("application/text; application/graph+json; text/html")).to.be.true;
-			done();
-		});
-
-		it("should not raise an exception", function(done) {
-			try {
-				commons.logger.info("Test %d", 1);
-				assert.equal(true, true, "no exception is raised");
-			} catch (e) {
-				assert.equal(true, false, "an exception is raised");
-			}
 			done();
 		});
 

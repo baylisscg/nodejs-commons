@@ -4,7 +4,7 @@
  * Library of common functions used by AURIN
  */
 "use strict";
-var commons = exports;
+var commons = {};
 
 var cluster = require("cluster");
 var child_process = require('child_process');
@@ -38,7 +38,7 @@ commons.getNumberOfProcesses = function(name) {
 /*
  * Spawns a new app and sets up a event handle on a "memoryalarm" event
  */
-var spawnApp = function() {
+commons.spawnApp = function() {
 	var worker = cluster.fork();
 
 	worker.on("message", function(msg) {
@@ -82,14 +82,12 @@ commons.startCluster = function(propertiesFile, name, startServer) {
 			commons.logger.info("Spawning " + nProcesses + " processes for service "
 					+ name);
 			for (var i = 0; i < nProcesses; i++) {
-				spawnApp();
+				commons.spawnApp();
 			}
 
-			// On disconnection, spawns a new app (unless we are in test mode)
+			// On disconnection, spawns a new app
 			cluster.on("disconnect", function() {
-				if (name !== "test") {
-					spawnApp();
-				}
+				commons.spawnApp();
 			});
 
 			/*
@@ -98,7 +96,71 @@ commons.startCluster = function(propertiesFile, name, startServer) {
 		} else {
 			// Starts server
 			startServer(commons, function(commons, app) {
-				commons.logger.info("started!");
+
+				// Catches uncaught exceptions
+				/*
+				 * process.on("uncaughtException", function(e) {
+				 * commons.logger.error("Uncaught exception: " + e); });
+				 */
+				// Defines a isClosing property to avoid re-closing a
+				// process that is shutting down
+				app.isClosing = false;
+
+				// Process a message sent to the worked
+				process.on("message", function(msg) {
+
+					// If the message is commitsuicde, flags it for
+					// shutdown
+					if (msg.message === "commitsuicide" && app.isClosing === false) {
+						commons.logger.error("Process " + this.pid
+								+ " slated for termination due to high memory consumption");
+
+						app.isClosing = true;
+
+						// On app closed, shuts the process down
+						app.on("close", function() {
+							commons.logger.error("Process " + process.pid + " closed");
+							process.disconnect();
+						});
+
+						// After a timeout, forces the shutting down
+						setTimeout(function() {
+							commons.logger.error("Forcing  process " + process.pid
+									+ " to terminate");
+							process.disconnect();
+						}, Number(commons.getProperty("nodejs.cluster.closewaitms")));
+					}
+
+					// Prevents the app from accepting new connections
+					app.close();
+				});
+
+				// Signals the disconnection
+				process.on("disconnect", function() {
+					commons.logger.error("Process " + this.pid + " is now disconnected");
+				});
+
+				// Signals the shutting down
+				process.on("exit", function(code, signal) {
+					commons.logger.error("Process " + this.pid + " is now dead");
+				});
+
+				/*
+				 * Checks, at regular intervals, the memory consumption of the worker
+				 */
+				setInterval(function(app) {
+					if (commons.getRSSMemoryMB() > Number(commons
+							.getProperty("nodejs.cluster.maxrssmemorymb"))) {
+						commons.logger.error("Process " + process.pid
+								+ " has consumed more than " + commons.getRSSMemoryMB()
+								+ " MBs");
+						process.send({
+							message : "memoryalarm",
+							pid : process.pid
+						});
+					}
+				}, commons.getProperty("nodejs.cluster.checkmemoryms"));
+
 			});
 		}
 	});
@@ -295,3 +357,20 @@ commons.injectEndpoints = function(resources) {
 		}
 	}
 };
+
+/**
+ * Function/objects to export
+ */
+exports.getNumberOfProcesses = commons.getNumberOfProcesses;
+exports.startCluster = commons.startCluster;
+exports.getProperty = commons.getProperty;
+exports.setProperty = commons.setProperty;
+exports.setObjectResponse = commons.setObjectResponse;
+exports.isJSON = commons.isJSON;
+exports.isGeoJSON = commons.isGeoJSON;
+exports.isJSONGraph = commons.isJSONGraph;
+exports.logRequest = commons.logRequest;
+exports.logger = commons.logger;
+exports.getUsedMemoryMB = commons.getUsedMemoryMB;
+exports.getTotalMemoryMB = commons.getTotalMemoryMB;
+exports.getRSSMemoryMB = commons.getRSSMemoryMB;
