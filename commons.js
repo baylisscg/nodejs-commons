@@ -181,7 +181,6 @@ commons.startCluster = function(propertiesFile, name, startServer) {
  *          itself is passed as parameter
  */
 commons.setup = function(propertiesFile, callback) {
-	var that = this;
 
 	// Load properties file
 	require("properties").load(propertiesFile, function(err, properties) {
@@ -191,7 +190,7 @@ commons.setup = function(propertiesFile, callback) {
 		}
 
 		// Apply defaults
-		that.properties = properties;
+		commons.properties = properties;
 		Object.keys(defaults).forEach(function(prop) {
 			if (!commons.getProperty(prop)) {
 				commons.setProperty(prop, defaults[prop]);
@@ -199,12 +198,12 @@ commons.setup = function(propertiesFile, callback) {
 		});
 
 		// Sets the logger
-		that.logger = require("tracer").console({
+		commons.logger = require("tracer").console({
 			format : "{{timestamp}} <{{title}}> {{message}} (in {{file}}:{{line}})",
 			dateformat : "HH:MM:ss.L",
 			level : properties["log.level"]
 		});
-		callback(that);
+		callback(commons);
 	});
 };
 
