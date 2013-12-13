@@ -97,11 +97,16 @@ commons.startCluster = function(propertiesFile, name, startServer) {
 			// Starts server
 			startServer(commons, function(commons, app) {
 
+				// If app is null, exists
+				if (!app) {
+					process.exit(1); // FIXME: ???
+				}
+
 				// Catches uncaught exceptions
-				/*
-				 * process.on("uncaughtException", function(e) {
-				 * commons.logger.error("Uncaught exception: " + e); });
-				 */
+				process.on("uncaughtException", function(e) {
+					commons.logger.error("Uncaught exception: " + e);
+				});
+
 				// Defines a isClosing property to avoid re-closing a
 				// process that is shutting down
 				app.isClosing = false;
@@ -361,6 +366,7 @@ commons.injectEndpoints = function(resources) {
 /**
  * Function/objects to export
  */
+exports.setup = commons.setup;
 exports.getNumberOfProcesses = commons.getNumberOfProcesses;
 exports.startCluster = commons.startCluster;
 exports.getProperty = commons.getProperty;

@@ -11,6 +11,7 @@ API
 ---
 
 Functions:
+* setup
 * startCluster
 * setObjectResponse
 * getProperty
