@@ -110,6 +110,9 @@ commons.startCluster = function(propertiesFile, name, startServer) {
 				// Defines a isClosing property to avoid re-closing a
 				// process that is shutting down
 				app.isClosing = false;
+				
+				// Sets process's title 
+				process.title= name;
 
 				// Process a message sent to the worked
 				process.on("message", function(msg) {
