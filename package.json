@@ -1,6 +1,6 @@
 {
   "name": "nodejs-commons",
-  "version": "0.4.1",
+  "version": "0.4.2-SNAPSHOT",
   "description": "Library of functions used by all Node.js projects in AURIN",
   "private": true,
   "keywords": [
@@ -26,7 +26,7 @@
   "engines": {
     "node": "v0.10.x"
   },
-  "_id": "au.org.aurin.nodejs-commons@0.4.1",
+  "_id": "au.org.aurin.nodejs-commons@0.4.2-SNAPSHOT",
   "optionalDependencies": {},
   "_engineSupported": true,
   "_npmVersion": "1.2.x",
