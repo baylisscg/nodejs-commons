@@ -1,6 +1,6 @@
 /**
  * commons.js
- * 
+ *
  * Library of common functions used by AURIN
  */
 "use strict";
@@ -8,6 +8,7 @@ var commons = {};
 
 var cluster = require("cluster");
 var child_process = require('child_process');
+var util = require("util");
 
 // Default values of properties (they are set in absence of
 // values provided in the file)
@@ -23,7 +24,7 @@ defaults["aurin.processes"] = 2;
  * Returns the number of processes to spawn. If property aurin.<name>.processes
  * is 0 one per CPU is spawned, if that property is undefined, aurin.processes
  * is used instead
- * 
+ *
  * @param name
  *          of process
  * @return number of to spawn
@@ -60,7 +61,7 @@ commons.spawnApp = function() {
 
 /**
  * Starts a cluster of services
- * 
+ *
  * @param propertiesFile
  *          properties file
  * @param name
@@ -110,9 +111,9 @@ commons.startCluster = function(propertiesFile, name, startServer) {
 				// Defines a isClosing property to avoid re-closing a
 				// process that is shutting down
 				app.isClosing = false;
-				
-				// Sets process's title 
-				process.title= name;
+
+				// Sets process's title
+				process.title = name;
 
 				// Process a message sent to the worked
 				process.on("message", function(msg) {
@@ -176,7 +177,7 @@ commons.startCluster = function(propertiesFile, name, startServer) {
 
 /**
  * Setup of a component
- * 
+ *
  * @param propertiesFile
  *          properties file
  * @param callback
@@ -203,7 +204,7 @@ commons.setup = function(propertiesFile, callback) {
 		// Sets the logger
 		commons.logger = require("tracer").console({
 			format : "{{timestamp}} <{{title}}> {{message}} (in {{file}}:{{line}})",
-			dateformat : "HH:MM:ss.L",
+			dateformat : "yyyy-mm-dd HH:MM:ss.L",
 			level : properties["log.level"]
 		});
 		callback(commons);
@@ -212,7 +213,7 @@ commons.setup = function(propertiesFile, callback) {
 
 /**
  * Returns a property value given its name
- * 
+ *
  * @param propertyName
  */
 commons.getProperty = function(propertyName) {
@@ -221,7 +222,7 @@ commons.getProperty = function(propertyName) {
 
 /**
  * Sets a property value given its name
- * 
+ *
  * @param propertyName
  * @param propertyValue
  */
@@ -232,7 +233,7 @@ commons.setProperty = function(propertyName, propertyValue) {
 /**
  * Constructs a response for the return of a JSON object or, if the content-type
  * header is not application/json, of a string
- * 
+ *
  * @param obj
  *          Object to be returned
  * @param response
@@ -270,7 +271,7 @@ commons.setObjectResponse = function(args) {
 
 /**
  * Returns true if mimetype is JSON
- * 
+ *
  * @param mime-type
  *          to test
  */
@@ -283,7 +284,7 @@ commons.isJSON = function(mimetype) {
 
 /**
  * Returns true if mimetype is GeoJSON
- * 
+ *
  * @param mime-type
  *          to test
  */
@@ -296,7 +297,7 @@ commons.isGeoJSON = function(mimetype) {
 
 /**
  * Returns true if mimetype is JSONGraph
- * 
+ *
  * @param mime-type
  *          to test
  */
@@ -312,16 +313,14 @@ commons.isJSONGraph = function(mimetype) {
  * Writes logs about req request
  */
 commons.logRequest = function(req) {
-	var util = require('util');
 	var mem = util.inspect(process.memoryUsage());
-
-	commons.logger.debug("Process %s started request method: %s url: %s",
-			process.pid, req.method, req.url);
+	commons.logger.debug("Process %s received request %s %s from user %s",
+			process.pid, req.method, req.url, req.headers["x-aurin-user-id"]);
 	req.on("end", function() {
-		commons.logger.debug("Heap: %s (MB), RSS (MB): %s", commons
-				.getUsedMemoryMB(), commons.getRSSMemoryMB());
-		commons.logger.debug("Process %s completed request url: %s", process.pid,
-				req.method, req.url);
+		commons.logger.debug("Process %s completed request %s %s from user %s",
+				process.pid, req.method, req.url, req.headers["x-aurin-user-id"]);
+		commons.logger.debug("Process %s memory status is: heap %s (MB), RSS %s (MB)",
+				process.pid, commons.getUsedMemoryMB(), commons.getRSSMemoryMB());
 	});
 };
 
@@ -348,7 +347,7 @@ commons.getRSSMemoryMB = function() {
 
 /**
  * Injects the geoclassification endpoint into every Swagger's resource
- * 
+ *
  * @param resources
  *          {Object} Resources repo. as loaded with Swagger
  */
