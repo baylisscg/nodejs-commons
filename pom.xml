@@ -1,173 +1,178 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- pom.xml Couch-Proto is an application to test CouchDB&GeoCouch againts AURIN requirements -->
+<!-- pom.xml Couch-Proto is an application to test CouchDB&GeoCouch againts 
+	AURIN requirements -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>au.org.aurin</groupId>
-  <artifactId>nodejs-commons</artifactId>
-  <version>0.4.3-SNAPSHOT</version>
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>au.org.aurin</groupId>
+	<artifactId>nodejs-commons</artifactId>
+	<version>0.4.3</version>
 
-  <properties>
-    <version>${project.version}</version>
-    <nodeVersion>v0.10.x</nodeVersion>
-    <npmVersion>1.2.x</npmVersion>
-    <expressVersion>3.2.x</expressVersion>
-    <tracerVersion>0.5.x</tracerVersion>
-    <chaiVersion>1.6.x</chaiVersion>
-    <propertiesVersion>0.3.x</propertiesVersion>
-  </properties>
+	<properties>
+		<version>${project.version}</version>
+		<nodeVersion>v0.10.x</nodeVersion>
+		<npmVersion>1.2.x</npmVersion>
+		<expressVersion>3.2.x</expressVersion>
+		<enumVersion>0.2.5</enumVersion>
+		<tracerVersion>0.5.x</tracerVersion>
+		<chaiVersion>1.6.x</chaiVersion>
+		<propertiesVersion>0.3.x</propertiesVersion>
+	</properties>
 
-  <parent>
-    <groupId>au.org.aurin</groupId>
-    <artifactId>aurin-project</artifactId>
-    <version>0.2.6</version>
-  </parent>
+	<parent>
+		<groupId>au.org.aurin</groupId>
+		<artifactId>aurin-project</artifactId>
+		<version>0.2.6</version>
+	</parent>
 
-  <repositories>
-    <repository>
-      <id>aurin</id>
-      <url>https://mvn.aurin.org.au/nexus/content/repositories/stable/</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-    </repository>
-    <repository>
-      <id>aurin-snapshots</id>
-      <url>https://mvn.aurin.org.au/nexus/content/repositories/snapshots/</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
-  </repositories>
+	<repositories>
+		<repository>
+			<id>aurin</id>
+			<url>https://mvn.aurin.org.au/nexus/content/repositories/stable/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</repository>
+		<repository>
+			<id>aurin-snapshots</id>
+			<url>https://mvn.aurin.org.au/nexus/content/repositories/snapshots/</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
 
-  <dependencies>
+	<dependencies>
 
-  </dependencies>
+	</dependencies>
 
-  <build>
+	<build>
 
-    <plugins>
+		<plugins>
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<groupId>org.apache.maven.plugins</groupId>
+				<version>1.7</version>
+				<dependencies>
+					<dependency>
+						<groupId>ant</groupId>
+						<artifactId>ant-jsch</artifactId>
+						<version>1.6.5</version>
+					</dependency>
+					<dependency>
+						<groupId>ant-contrib</groupId>
+						<artifactId>ant-contrib</artifactId>
+						<version>1.0b3</version>
+						<exclusions>
+							<exclusion>
+								<groupId>ant</groupId>
+								<artifactId>ant</artifactId>
+							</exclusion>
+						</exclusions>
+					</dependency>
+				</dependencies>
+				<executions>
+					<execution>
+						<id>test</id>
+						<phase>test</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target id="test" unless="skipTests">
+								<exec executable="mocha" dir="." failonerror="true">
+									<arg value="--no-colors" />
+								</exec>
+							</target>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 
-      <plugin>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <groupId>org.apache.maven.plugins</groupId>
-        <version>1.7</version>
-        <dependencies>
-          <dependency>
-            <groupId>ant</groupId>
-            <artifactId>ant-jsch</artifactId>
-            <version>1.6.5</version>
-          </dependency>
-          <dependency>
-            <groupId>ant-contrib</groupId>
-            <artifactId>ant-contrib</artifactId>
-            <version>1.0b3</version>
-            <exclusions>
-              <exclusion>
-                <groupId>ant</groupId>
-                <artifactId>ant</artifactId>
-              </exclusion>
-            </exclusions>
-          </dependency>
-        </dependencies>
-        <executions>
-          <execution>
-            <id>test</id>
-            <phase>test</phase>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <configuration>
-              <target id="test" unless="skipTests">
-                <exec executable="mocha" dir="." failonerror="true">
-                  <arg value="--no-colors"/>
-                </exec>
-              </target>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>properties-maven-plugin</artifactId>
+			</plugin>
 
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>properties-maven-plugin</artifactId>
-      </plugin>
+			<plugin>
+				<groupId>com.google.code.maven-replacer-plugin</groupId>
+				<artifactId>replacer</artifactId>
+				<version>1.5.1</version>
+				<executions>
+					<execution>
+						<phase>compile</phase>
+						<goals>
+							<goal>replace</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<file>package.template.json</file>
+					<outputFile>package.json</outputFile>
+					<replacements>
+						<replacement>
+							<token>GROUPID</token>
+							<value>${project.groupId}</value>
+						</replacement>
+						<replacement>
+							<token>ARTIFACTID</token>
+							<value>${project.artifactId}</value>
+						</replacement>
+						<replacement>
+							<token>ARTIFACTVERSION</token>
+							<value>${project.version}</value>
+						</replacement>
+						<replacement>
+							<token>NODEVERSION</token>
+							<value>${nodeVersion}</value>
+						</replacement>
+						<replacement>
+							<token>NPMVERSION</token>
+							<value>${npmVersion}</value>
+						</replacement>
+						<replacement>
+							<token>EXPRESSVERSION</token>
+							<value>${expressVersion}</value>
+						</replacement>
+						<replacement>
+							<token>ENUMVERSION</token>
+							<value>${enumVersion}</value>
+						</replacement>
+						<replacement>
+							<token>TRACERVERSION</token>
+							<value>${tracerVersion}</value>
+						</replacement>
+						<replacement>
+							<token>CHAIVERSION</token>
+							<value>${chaiVersion}</value>
+						</replacement>
+						<replacement>
+							<token>MOCHAVERSION</token>
+							<value>${mochaVersion}</value>
+						</replacement>
+						<replacement>
+							<token>PROPERTIESVERSION</token>
+							<value>${propertiesVersion}</value>
+						</replacement>
+					</replacements>
+				</configuration>
+			</plugin>
 
-      <plugin>
-        <groupId>com.google.code.maven-replacer-plugin</groupId>
-        <artifactId>replacer</artifactId>
-        <version>1.5.1</version>
-        <executions>
-          <execution>
-            <phase>compile</phase>
-            <goals>
-              <goal>replace</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <file>package.template.json</file>
-          <outputFile>package.json</outputFile>
-          <replacements>
-            <replacement>
-              <token>GROUPID</token>
-              <value>${project.groupId}</value>
-            </replacement>
-            <replacement>
-              <token>ARTIFACTID</token>
-              <value>${project.artifactId}</value>
-            </replacement>
-            <replacement>
-              <token>ARTIFACTVERSION</token>
-              <value>${project.version}</value>
-            </replacement>
-            <replacement>
-              <token>NODEVERSION</token>
-              <value>${nodeVersion}</value>
-            </replacement>
-            <replacement>
-              <token>NPMVERSION</token>
-              <value>${npmVersion}</value>
-            </replacement>
-            <replacement>
-              <token>EXPRESSVERSION</token>
-              <value>${expressVersion}</value>
-            </replacement>
-            <replacement>
-              <token>TRACERVERSION</token>
-              <value>${tracerVersion}</value>
-            </replacement>
-            <replacement>
-              <token>CHAIVERSION</token>
-              <value>${chaiVersion}</value>
-            </replacement>
-            <replacement>
-              <token>MOCHAVERSION</token>
-              <value>${mochaVersion}</value>
-            </replacement>
-            <replacement>
-              <token>PROPERTIESVERSION</token>
-              <value>${propertiesVersion}</value>
-            </replacement>
-          </replacements>
-        </configuration>
-      </plugin>
+		</plugins>
 
-    </plugins>
+	</build>
 
-  </build>
+	<issueManagement>
+		<system>Redmine</system>
+		<url>https://projects.eresearch.unimelb.edu.au/</url>
+	</issueManagement>
 
-  <issueManagement>
-    <system>Redmine</system>
-    <url>https://projects.eresearch.unimelb.edu.au/</url>
-  </issueManagement>
-
-  <developers>
-    <developer>
-      <id>LM</id>
-      <name>Luca Morandini</name>
-      <email>lmorandini [you know] unimelb.edu.au</email>
-    </developer>
-  </developers>
+	<developers>
+		<developer>
+			<id>LM</id>
+			<name>Luca Morandini</name>
+			<email>lmorandini [you know] unimelb.edu.au</email>
+		</developer>
+	</developers>
 
 </project>

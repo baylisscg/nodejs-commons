@@ -30,7 +30,7 @@ describe("test-unit.js", function() {
 		});
 
 		it("the property has the value defined in the file", function(done) {
-			expect(10000).equal(Number(commons.getProperty("nodejs.cluster.closewaitms")));
+			expect(3000).equal(Number(commons.getProperty("nodejs.cluster.closewaitms")));
 			done();
 		});
 

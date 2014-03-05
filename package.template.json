@@ -17,6 +17,7 @@
   "dependencies": {
     "properties": "PROPERTIESVERSION",
     "express": "EXPRESSVERSION",
+    "enum": "ENUMVERSION",
     "tracer": "TRACERVERSION"
   },
   "devDependencies": {

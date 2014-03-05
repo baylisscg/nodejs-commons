@@ -1,6 +1,6 @@
 /**
  * commons.js
- *
+ * 
  * Library of common functions used by AURIN
  */
 "use strict";
@@ -20,11 +20,14 @@ defaults["log.level"] = "info";
 defaults["maxage.default"] = 60;
 defaults["aurin.processes"] = 2;
 
+require('enum').register();
+var messages = new Enum([ "MEMORYALARM", "EXCEPTIONALARM", "COMMITSUICIDE" ]);
+
 /**
  * Returns the number of processes to spawn. If property aurin.<name>.processes
  * is 0 one per CPU is spawned, if that property is undefined, aurin.processes
  * is used instead
- *
+ * 
  * @param name
  *          of process
  * @return number of to spawn
@@ -37,21 +40,22 @@ commons.getNumberOfProcesses = function(name) {
 };
 
 /*
- * Spawns a new app and sets up a event handle on a "memoryalarm" event
+ * Spawns a new app and sets up a event handler on some events
  */
 commons.spawnApp = function() {
 	var worker = cluster.fork();
 
 	worker.on("message", function(msg) {
 
-		// If memoryalarm, message is detected sends a commitsuicide to the process
-		// given in msg
-		if (msg.message === "memoryalarm") {
+		// If an alarm is raised, message is detected sends a commitsuicide to the
+		// process given in msg
+		if (messages.MEMORYALARM.is(msg.message)
+				|| messages.EXCEPTIONALARM.is(msg.message)) {
 			for ( var i in cluster.workers) {
 				var worker = cluster.workers[i];
 				if (worker.process.pid === msg.pid) {
 					worker.send({
-						message : "commitsuicide"
+						message : messages.COMMITSUICIDE
 					});
 				}
 			}
@@ -61,7 +65,7 @@ commons.spawnApp = function() {
 
 /**
  * Starts a cluster of services
- *
+ * 
  * @param propertiesFile
  *          properties file
  * @param name
@@ -82,6 +86,7 @@ commons.startCluster = function(propertiesFile, name, startServer) {
 			var nProcesses = commons.getNumberOfProcesses(name);
 			commons.logger.info("Spawning " + nProcesses + " processes for service "
 					+ name);
+
 			for (var i = 0; i < nProcesses; i++) {
 				commons.spawnApp();
 			}
@@ -98,15 +103,26 @@ commons.startCluster = function(propertiesFile, name, startServer) {
 			// Starts server
 			startServer(commons, function(commons, app) {
 
+				// Catches uncaught exceptions
+				app.use(app.router);
+				app.use(function(err, req, res, next) {
+					if (!err) {
+						return next()
+					} else {
+						commons.logger.error("Uncaught exception detected: " + err);
+						process.send({
+							message : messages.EXCEPTIONALARM,
+							pid : process.pid
+						});
+						return next();
+					}
+				});
+
 				// If app is null, exists
 				if (!app) {
-					process.exit(1); // FIXME: ???
+					commons.logger.error("Strangely enogouh, app is null, exiting");
+					process.exit(1);
 				}
-
-				// Catches uncaught exceptions
-				process.on("uncaughtException", function(e) {
-					commons.logger.error("Uncaught exception: " + e);
-				});
 
 				// Defines a isClosing property to avoid re-closing a
 				// process that is shutting down
@@ -116,33 +132,35 @@ commons.startCluster = function(propertiesFile, name, startServer) {
 				process.title = name;
 
 				// Process a message sent to the worked
-				process.on("message", function(msg) {
+				process.on("message",
+						function(msg) {
 
-					// If the message is commitsuicde, flags it for
-					// shutdown
-					if (msg.message === "commitsuicide" && app.isClosing === false) {
-						commons.logger.error("Process " + this.pid
-								+ " slated for termination due to high memory consumption");
+							// If the message is commitsuicde, flags it for
+							// shutdown
+							if (messages.COMMITSUICIDE.is(msg.message)
+									&& app.isClosing === false) {
+								commons.logger.error("Process " + this.pid
+										+ " slated for termination");
 
-						app.isClosing = true;
+								// On app closed, shuts the process down
+								app.on("close", function() {
+									commons.logger.error("Process " + process.pid + " closed");
+								});
 
-						// On app closed, shuts the process down
-						app.on("close", function() {
-							commons.logger.error("Process " + process.pid + " closed");
-							process.disconnect();
+								// Prevents the app from accepting new connections
+								app.isClosing = true;
+								app.emit("close");
+
+								// After a timeout, forces the shutting down
+								setTimeout(function() {
+									commons.logger.error("Forcing  process " + process.pid
+											+ " to terminate");
+									process.disconnect();
+								}, Number(commons.getProperty("nodejs.cluster.closewaitms")));
+
+							}
+
 						});
-
-						// After a timeout, forces the shutting down
-						setTimeout(function() {
-							commons.logger.error("Forcing  process " + process.pid
-									+ " to terminate");
-							process.disconnect();
-						}, Number(commons.getProperty("nodejs.cluster.closewaitms")));
-					}
-
-					// Prevents the app from accepting new connections
-					app.close();
-				});
 
 				// Signals the disconnection
 				process.on("disconnect", function() {
@@ -164,7 +182,7 @@ commons.startCluster = function(propertiesFile, name, startServer) {
 								+ " has consumed more than " + commons.getRSSMemoryMB()
 								+ " MBs");
 						process.send({
-							message : "memoryalarm",
+							message : messages.MEMORYALARM,
 							pid : process.pid
 						});
 					}
@@ -177,7 +195,7 @@ commons.startCluster = function(propertiesFile, name, startServer) {
 
 /**
  * Setup of a component
- *
+ * 
  * @param propertiesFile
  *          properties file
  * @param callback
@@ -213,7 +231,7 @@ commons.setup = function(propertiesFile, callback) {
 
 /**
  * Returns a property value given its name
- *
+ * 
  * @param propertyName
  */
 commons.getProperty = function(propertyName) {
@@ -222,7 +240,7 @@ commons.getProperty = function(propertyName) {
 
 /**
  * Sets a property value given its name
- *
+ * 
  * @param propertyName
  * @param propertyValue
  */
@@ -233,7 +251,7 @@ commons.setProperty = function(propertyName, propertyValue) {
 /**
  * Constructs a response for the return of a JSON object or, if the content-type
  * header is not application/json, of a string
- *
+ * 
  * @param obj
  *          Object to be returned
  * @param response
@@ -271,7 +289,7 @@ commons.setObjectResponse = function(args) {
 
 /**
  * Returns true if mimetype is JSON
- *
+ * 
  * @param mime-type
  *          to test
  */
@@ -284,7 +302,7 @@ commons.isJSON = function(mimetype) {
 
 /**
  * Returns true if mimetype is GeoJSON
- *
+ * 
  * @param mime-type
  *          to test
  */
@@ -297,7 +315,7 @@ commons.isGeoJSON = function(mimetype) {
 
 /**
  * Returns true if mimetype is JSONGraph
- *
+ * 
  * @param mime-type
  *          to test
  */
@@ -319,8 +337,9 @@ commons.logRequest = function(req) {
 	req.on("end", function() {
 		commons.logger.debug("Process %s completed request %s %s from user %s",
 				process.pid, req.method, req.url, req.headers["x-aurin-user-id"]);
-		commons.logger.debug("Process %s memory status is: heap %s (MB), RSS %s (MB)",
-				process.pid, commons.getUsedMemoryMB(), commons.getRSSMemoryMB());
+		commons.logger.debug(
+				"Process %s memory status is: heap %s (MB), RSS %s (MB)", process.pid,
+				commons.getUsedMemoryMB(), commons.getRSSMemoryMB());
 	});
 };
 
@@ -347,7 +366,7 @@ commons.getRSSMemoryMB = function() {
 
 /**
  * Injects the geoclassification endpoint into every Swagger's resource
- *
+ * 
  * @param resources
  *          {Object} Resources repo. as loaded with Swagger
  */

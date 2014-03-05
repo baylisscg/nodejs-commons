@@ -17,6 +17,7 @@
   "dependencies": {
     "properties": "0.3.x",
     "express": "3.2.x",
+    "enum": "0.2.5",
     "tracer": "0.5.x"
   },
   "devDependencies": {
