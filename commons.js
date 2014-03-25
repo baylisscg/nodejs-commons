@@ -384,6 +384,17 @@ commons.injectEndpoints = function(resources) {
 };
 
 /**
+ * Prints out the given object on the debug log
+ * 
+ * @param obj Object to print 
+ */
+commons.debug= function(obj) {
+  commons.logger.debug("-------------- {"); 
+  commons.logger.debug(util.inspect(obj, {depth:null}));
+  commons.logger.debug("} -------------"); 
+};
+
+/**
  * Function/objects to export
  */
 exports.setup = commons.setup;
@@ -400,3 +411,4 @@ exports.logger = commons.logger;
 exports.getUsedMemoryMB = commons.getUsedMemoryMB;
 exports.getTotalMemoryMB = commons.getTotalMemoryMB;
 exports.getRSSMemoryMB = commons.getRSSMemoryMB;
+exports.debug= commons.debug;

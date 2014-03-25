@@ -24,6 +24,7 @@ Functions:
 * getUsedMemoryMB;
 * getTotalMemoryMB;
 * getRSSMemoryMB;
+* debug
 
 
 Objects:
