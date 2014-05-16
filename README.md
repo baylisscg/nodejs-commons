@@ -1,10 +1,12 @@
 # nodejs-commons
 
-Common NodeJS functions library.
+Common NodeJS functions library used by the AURIN project. However, the functions it provides may be 
+of more general use.
+
 
 ## Introduction
 
-This module contains all Node.js functions that can possiibly be re-used across other modules.
+This module contains Node.js functions that can be re-used by other components.
 
 
 API
@@ -42,20 +44,27 @@ Objects:
 Install from GitHub:
   `npm install git+ssh://git@github.com/AURIN/nodejs-commons.git#<version>`
 
-Write the package description (package.json) and the properties file.
+
+## AURIN-specific installation (NOTE: do not do it unless you are deploying as parte of AURIN)
+
+To update the package.json from the Maven pom.xml file, the following command has to be performed before test and deployment:
+
   `mvn compile -Ddeployment=<deployment type> -Dsystem=<system>`
   
-To install the package one package.json has been set:
-  `npm install`
 
+## Tests
 
-## Test (after executing 'mvn compile', as described above)
+To run thes test, following module have to be installed (versions are detailed in the devDependencies section of the package.json).
 
-Unit tests:
+* Chai
+* Express
+  
+
+# Unit tests:
 
   `mocha`
   
-Cluster tests (for the cluster test to work, http://www.google.com must be reachable):
+# Cluster tests (for the cluster test to work, http://www.google.com must be reachable):
 
 * start the cluster `node ./test/app.js` (it should return two welcome messages, 
 with two different PIDs);
