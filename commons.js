@@ -218,28 +218,40 @@ commons.startCluster = function(propertiesFile, name, startServer) {
 commons.setup = function(propertiesFile, callback) {
 
   // Load properties file
-  require("properties").load(propertiesFile, function(err, properties) {
-    if (err != null) {
-      console.log(err);
-      callback(null);
-    }
+  require("properties")
+      .load(
+          propertiesFile,
+          function(err, properties) {
+            if (err != null) {
+              console.log(err);
+              callback(null);
+            }
 
-    // Apply defaults
-    commons.properties = properties;
-    Object.keys(defaults).forEach(function(prop) {
-      if (!commons.getProperty(prop)) {
-        commons.setProperty(prop, defaults[prop]);
-      }
-    });
+            // Apply defaults
+            commons.properties = properties;
+            Object.keys(defaults).forEach(function(prop) {
+              if (!commons.getProperty(prop)) {
+                commons.setProperty(prop, defaults[prop]);
+              }
+            });
 
-    // Sets the logger
-    commons.logger = require("tracer").console({
-      format : "{{timestamp}} <{{title}}> {{message}} (in {{file}}:{{line}})",
-      dateformat : "yyyy-mm-dd HH:MM:ss.L",
-      level : properties["log.level"]
-    });
-    callback(commons);
-  });
+            // Sets the logger
+            commons.logger = require("tracer")
+                .console(
+                    {
+                      format : [
+                          "{{timestamp}} [LOG] {{message}} (in {{file}}:{{line}})",
+                          {
+                            info : "{{timestamp}} [INFO] {{message}} (in {{file}}:{{line}})",
+                            warn : "{{timestamp}} [WARN] {{message}} (in {{file}}:{{line}})",
+                            debug : "{{timestamp}} [DEBUG] {{message}} (in {{file}}:{{line}})",
+                            error : "{{timestamp}} [ERROR] {{message}} (in {{file}}:{{line}})\nCall Stack:\n{{stack}}"
+                          } ],
+                      dateformat : "yyyy-mm-dd HH:MM:ss.L",
+                      level : properties["log.level"]
+                    });
+            callback(commons);
+          });
 };
 
 /**

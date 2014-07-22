@@ -54,7 +54,7 @@ To update the package.json from the Maven pom.xml file, the following command ha
 
 ## Tests
 
-To run thes test, following module have to be installed (versions are detailed in the devDependencies section of the package.json).
+To run these test, following module have to be installed (versions are detailed in the devDependencies section of the package.json).
 
 * Chai
 * Express
@@ -74,7 +74,11 @@ memory used, wait 3s, commit suicide, and another process re-spawned immediately
 * execute 'curl -X GET "http://localhost:8080/throwuncaught"' from another shell (it should signal an uncaught 
 exception, wait 3s, commit suicide, and another process re-spawned immediately);
 * execute 'ps -ef | grep test', it should show two, and only two, processes. 
-  
+
+
+# License
+
+Apache License, Version 2.0, see the LICENSE file  
 
   
 

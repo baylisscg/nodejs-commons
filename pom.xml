@@ -12,14 +12,14 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>au.org.aurin</groupId>
   <artifactId>nodejs-commons</artifactId>
-  <version>0.4.5-SNAPSHOT</version>
+  <version>0.4.5</version>
 
   <properties>
     <version>${project.version}</version>
     <nodeVersion>v0.10.x</nodeVersion>
     <npmVersion>1.2.x</npmVersion>
     <enumVersion>0.2.5</enumVersion>
-    <tracerVersion>0.5.1</tracerVersion>
+    <tracerVersion>0.7.1</tracerVersion>
     <chaiVersion>1.6.x</chaiVersion>
     <propertiesVersion>0.3.3</propertiesVersion>
     <expressVersion>3.2.5</expressVersion>
