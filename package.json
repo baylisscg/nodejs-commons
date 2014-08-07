@@ -1,6 +1,6 @@
 {
   "name": "nodejs-commons",
-  "version": "0.4.6",
+  "version": "0.4.7-SNAPSHOT",
   "description": "Library of functions used by all Node.js projects in AURIN",
   "licenses" : [{
     "type": "Apache",
@@ -35,7 +35,7 @@
   "engines": {
     "node": "v0.10.x"
   },
-  "_id": "au.org.aurin.nodejs-commons@0.4.6",
+  "_id": "au.org.aurin.nodejs-commons@0.4.7-SNAPSHOT",
   "optionalDependencies": {},
   "_engineSupported": true,
   "_npmVersion": "1.2.x",
