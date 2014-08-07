@@ -21,7 +21,7 @@
     <enumVersion>0.2.5</enumVersion>
     <tracerVersion>0.7.1</tracerVersion>
     <chaiVersion>1.6.x</chaiVersion>
-    <propertiesVersion>0.3.3</propertiesVersion>
+    <propertiesVersion>1.2.1</propertiesVersion>
     <expressVersion>3.2.5</expressVersion>
   </properties>
 

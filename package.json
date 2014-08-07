@@ -23,7 +23,7 @@
   "contributors": [],
   "main": "./commons.js",
   "dependencies": {
-    "properties": "0.3.3",
+    "properties": "1.2.1",
     "enum": "0.2.5",
     "tracer": "0.7.1"
   },
