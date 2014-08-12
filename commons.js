@@ -219,8 +219,9 @@ commons.setup = function(propertiesFile, callback) {
 
   // Load properties file
   require("properties")
-      .load(
+      .parse(
           propertiesFile,
+          { path: true },
           function(err, properties) {
             if (err != null) {
               console.log(err);
