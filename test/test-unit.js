@@ -28,7 +28,12 @@ describe("test-unit.js", function() {
 
 	before(function(done) {
 		console.log("Start of testing...");
-		done();
+		// XXX This is a temporary hack to overcome a race
+		// condition due to the tests below sometimes trying
+		// to access commons before it has initialised.
+		// We need a better solution than this.
+		setTimeout(done, 1000);
+		// done(); // This is what we should do.
 	});
 
 		it("the property exists", function(done) {

@@ -182,7 +182,7 @@ commons.startCluster = function(propertiesFile, name, startServer) {
 
         // Signals the shutting down
         process.on("exit", function(code, signal) {
-          commons.logger.error("Process " + this.pid + " is now dead");
+          commons.logger.info("Process " + this.pid + " is now dead");
         });
 
         /*

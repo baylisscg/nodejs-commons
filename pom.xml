@@ -105,6 +105,7 @@
               <target id="test" unless="skipTests">
                 <exec executable="mocha" dir="." failonerror="true">
                   <arg value="--no-colors" />
+                  <arg value="-g test-unit" />
                 </exec>
               </target>
             </configuration>
