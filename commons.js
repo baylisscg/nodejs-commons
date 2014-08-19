@@ -403,7 +403,7 @@ commons.injectEndpoints = function(resources) {
       var res = resources[resourceName];
       if (res && typeof res.action === "function"
           && typeof res.spec !== "Object") {
-        resources.swagger["add" + res.spec.method].apply(null, [ res ]);
+        resources.swagger["add" + res.spec.method].apply(resources.swagger, [ res ]);
       }
     }
   }
