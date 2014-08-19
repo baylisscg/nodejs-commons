@@ -182,7 +182,7 @@ commons.startCluster = function(propertiesFile, name, startServer) {
 
         // Signals the shutting down
         process.on("exit", function(code, signal) {
-          commons.logger.error("Process " + this.pid + " is now dead");
+          commons.logger.info("Process " + this.pid + " is now dead");
         });
 
         /*
@@ -219,8 +219,9 @@ commons.setup = function(propertiesFile, callback) {
 
   // Load properties file
   require("properties")
-      .load(
+      .parse(
           propertiesFile,
+          { path: true },
           function(err, properties) {
             if (err != null) {
               console.log(err);
@@ -402,7 +403,7 @@ commons.injectEndpoints = function(resources) {
       var res = resources[resourceName];
       if (res && typeof res.action === "function"
           && typeof res.spec !== "Object") {
-        resources.swagger["add" + res.spec.method].apply(null, [ res ]);
+        resources.swagger["add" + res.spec.method].apply(resources.swagger, [ res ]);
       }
     }
   }
