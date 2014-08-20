@@ -358,12 +358,12 @@ commons.isJSONGraph = function(mimetype) {
  */
 commons.logRequest = function(req) {
   var mem = util.inspect(process.memoryUsage());
-  commons.logger.debug("Process %s received request %s %s", process.pid,
+  commons.logger.info("Process %s received request %s %s", process.pid,
       req.method, req.url);
   req.on("end", function() {
-    commons.logger.debug("Process %s completed request %s %s", process.pid,
+    commons.logger.info("Process %s completed request %s %s", process.pid,
         req.method, req.url);
-    commons.logger.debug(
+    commons.logger.info(
         "Process %s memory status is: heap %s (MB), RSS %s (MB)", process.pid,
         commons.getUsedMemoryMB(), commons.getRSSMemoryMB());
   });
