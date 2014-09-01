@@ -107,6 +107,18 @@ describe("test-unit.js", function() {
 			done();
 		});
 
+    it("Test safeness of a JavaScript expression", function(done) {
+      expect(commons.isEvalSafe(null)).to.be.true;
+      expect(commons.isEvalSafe("{")).to.be.false;
+      expect(commons.isEvalSafe("}")).to.be.false;
+      expect(commons.isEvalSafe("(")).to.be.false;
+      expect(commons.isEvalSafe(")")).to.be.false;
+      expect(commons.isEvalSafe("a==false")).to.be.true;
+      done();
+    });
+		
+
+		
 		after(function(done) {
 			console.log("...end of testing");
 			done();

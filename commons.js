@@ -221,7 +221,9 @@ commons.setup = function(propertiesFile, callback) {
   require("properties")
       .parse(
           propertiesFile,
-          { path: true },
+          {
+            path : true
+          },
           function(err, properties) {
             if (err != null) {
               console.log(err);
@@ -403,7 +405,8 @@ commons.injectEndpoints = function(resources) {
       var res = resources[resourceName];
       if (res && typeof res.action === "function"
           && typeof res.spec !== "Object") {
-        resources.swagger["add" + res.spec.method].apply(resources.swagger, [ res ]);
+        resources.swagger["add" + res.spec.method].apply(resources.swagger,
+            [ res ]);
       }
     }
   }
@@ -424,6 +427,16 @@ commons.debug = function(obj) {
 };
 
 /**
+ * Returns true of an expression is safe to be eval-uated
+ * 
+ * @param exprt
+ *          Expression to check
+ */
+commons.isEvalSafe = function(expr) {
+  return !(/[\(\)\{}\}]/.test(String(expr)));
+};
+
+/**
  * Function/objects to export
  */
 exports.setup = commons.setup;
@@ -441,3 +454,4 @@ exports.getUsedMemoryMB = commons.getUsedMemoryMB;
 exports.getTotalMemoryMB = commons.getTotalMemoryMB;
 exports.getRSSMemoryMB = commons.getRSSMemoryMB;
 exports.debug = commons.debug;
+exports.isEvalSafe = commons.isEvalSafe;
