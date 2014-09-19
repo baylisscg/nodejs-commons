@@ -25,7 +25,8 @@
   "dependencies": {
     "properties": "PROPERTIESVERSION",
     "enum": "ENUMVERSION",
-    "tracer": "TRACERVERSION"
+    "tracer": "TRACERVERSION",
+    "node-uuid": "UUIDVERSION"
   },
   "devDependencies": {
     "express": "EXPRESSVERSION",

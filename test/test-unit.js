@@ -117,8 +117,12 @@ describe("test-unit.js", function() {
       done();
     });
 		
-
-		
+    it("Test geneation of UUID", function(done) {
+      expect(commons.generateCouchDBUUID().length).equal(32);
+      expect(commons.generateCouchDBUUID().match("-")).equal(null);
+      done();
+    });
+    
 		after(function(done) {
 			console.log("...end of testing");
 			done();

@@ -12,7 +12,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>au.org.aurin</groupId>
   <artifactId>nodejs-commons</artifactId>
-  <version>0.4.10</version>
+  <version>0.4.11</version>
 
   <properties>
     <version>${project.version}</version>
@@ -23,6 +23,7 @@
     <chaiVersion>1.6.x</chaiVersion>
     <propertiesVersion>1.2.1</propertiesVersion>
     <expressVersion>3.2.5</expressVersion>
+    <uuidVersion>1.4.1</uuidVersion>
   </properties>
 
   <parent>
@@ -178,6 +179,10 @@
               <token>PROPERTIESVERSION</token>
               <value>${propertiesVersion}</value>
             </replacement>
+            <replacement>
+              <token>UUIDVERSION</token>
+              <value>${uuidVersion}</value>
+            </replacement>            
           </replacements>
         </configuration>
       </plugin>

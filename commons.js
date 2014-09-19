@@ -22,6 +22,7 @@ var commons = {};
 var cluster = require("cluster");
 var child_process = require('child_process');
 var util = require("util");
+var uuid = require("node-uuid");
 
 // Default values of properties (they are set in absence of
 // values provided in the file)
@@ -437,6 +438,15 @@ commons.isEvalSafe = function(expr) {
 };
 
 /**
+ * Returns a CouchDB-like UUID
+ *
+ * @return {String} UUID as 32 hex digits
+ */
+commons.generateCouchDBUUID = function() {
+  return uuid.v4().replace(/-/g, "");
+};
+
+/**
  * Function/objects to export
  */
 exports.setup = commons.setup;
@@ -455,3 +465,4 @@ exports.getTotalMemoryMB = commons.getTotalMemoryMB;
 exports.getRSSMemoryMB = commons.getRSSMemoryMB;
 exports.debug = commons.debug;
 exports.isEvalSafe = commons.isEvalSafe;
+exports.generateCouchDBUUID = commons.generateCouchDBUUID;
