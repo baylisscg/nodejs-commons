@@ -359,14 +359,13 @@ commons.isJSONGraph = function(mimetype) {
 /**
  * Writes logs about req request
  */
-commons.logRequest = function(req) {
-  var mem = util.inspect(process.memoryUsage());
+commons.logRequest = function(req, res) {
   commons.logger.info("Process %s received request %s %s", process.pid,
       req.method, req.url);
-  req.on("end", function() {
-    commons.logger.info("Process %s completed request %s %s", process.pid,
+  res.on("finish", function() {
+    commons.logger.info("Process %s completed response %s %s", process.pid,
         req.method, req.url);
-    commons.logger.info(
+    commons.logger.debug(
         "Process %s memory status is: heap %s (MB), RSS %s (MB)", process.pid,
         commons.getUsedMemoryMB(), commons.getRSSMemoryMB());
   });
@@ -439,7 +438,7 @@ commons.isEvalSafe = function(expr) {
 
 /**
  * Returns a CouchDB-like UUID
- *
+ * 
  * @return {String} UUID as 32 hex digits
  */
 commons.generateCouchDBUUID = function() {
