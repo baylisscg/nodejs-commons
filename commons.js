@@ -17,7 +17,8 @@
  * the License.
  */
 "use strict";
-var commons = {};
+
+var commons= exports;
 
 var cluster = require("cluster");
 var child_process = require('child_process');
@@ -278,35 +279,52 @@ commons.setProperty = function(propertyName, propertyValue) {
 };
 
 /**
- * Constructs a response for the return of a JSON object or, if the content-type
- * header is not application/json, of a string
- * 
- * @param obj
- *          Object to be returned
- * @param response
- *          Response
- * @param status
- *          Status of the response (200 if parameter is missing)
- * @param contentType
- *          Content type (application/json if parameter id missing)
- * @param maxAge
- *          Max age of cache (default value if parameter is missing)
+ * Sets the usual headers of the response
+ *
+ * @param args.response
+ *          {Object} Response
+ * @param args.status
+ *          {Number} Status of the response (200 if parameter is missing)
+ * @param args.contentType
+ *          {String} Content type (application/json if parameter id missing)
+ * @param args.maxAge
+ *          {Number} Max age of cache (default value if parameter is missing)
  * @param noCache
- *          If true, does not add cache-control headers
+ *          {Boolean} If true, does not add cache-control headers
  */
-commons.setObjectResponse = function(args) {
-  var status = (args.status !== undefined) ? args.status : 200;
-  var maxAge = ((args.maxAge !== undefined) ? args.maxAge : commons
-      .getProperty("maxage.default"));
-
+commons.setResponseHeaders = function(args) {
   args.response.header("Connection", "keep-alive");
-  args.response.header("Content-Length", args.obj.length);
   args.response.header("Transfer-Encoding", "chunked");
   args.response.header("Last-Modified", new Date());
   if (!args.noCache) {
-    args.response.header("Cache-Control", "max-age=" + maxAge);
+    args.response.header("Cache-Control", "max-age="
+        + ((args.maxAge !== undefined) ? args.maxAge : commons
+            .getProperty("maxage.default")));
   }
-  args.response.status(status);
+  args.response.header("Content-Type", args.contentType);
+};
+
+/**
+ * Constructs a response for the return of a JSON object or, if the content-type
+ * header is not application/json, of a string
+ *
+ * @param args.response
+ *          {Object} Response
+ * @param args.status
+ *          {Number} Status of the response (200 if parameter is missing)
+ * @param args.contentType
+ *          {String} Content type (application/json if parameter id missing)
+ * @param args.maxAge
+ *          {Number} Max age of cache (default value if parameter is missing)
+ * @param noCache
+ *          {Boolean} If true, does not add cache-control headers
+ * @param args.obj
+ *          Object to be returned
+ */
+commons.setObjectResponse = function(args) {
+  commons.setResponseHeaders(args);
+  args.response.header("Content-Length", args.obj.length);
+  args.response.status((args.status !== undefined) ? args.status : 200);
   if (commons.isJSON(args.contentType)) {
     args.response.json(args.obj);
   } else {
@@ -445,23 +463,3 @@ commons.generateCouchDBUUID = function() {
   return uuid.v4().replace(/-/g, "");
 };
 
-/**
- * Function/objects to export
- */
-exports.setup = commons.setup;
-exports.getNumberOfProcesses = commons.getNumberOfProcesses;
-exports.startCluster = commons.startCluster;
-exports.getProperty = commons.getProperty;
-exports.setProperty = commons.setProperty;
-exports.setObjectResponse = commons.setObjectResponse;
-exports.isJSON = commons.isJSON;
-exports.isGeoJSON = commons.isGeoJSON;
-exports.isJSONGraph = commons.isJSONGraph;
-exports.logRequest = commons.logRequest;
-exports.logger = commons.logger;
-exports.getUsedMemoryMB = commons.getUsedMemoryMB;
-exports.getTotalMemoryMB = commons.getTotalMemoryMB;
-exports.getRSSMemoryMB = commons.getRSSMemoryMB;
-exports.debug = commons.debug;
-exports.isEvalSafe = commons.isEvalSafe;
-exports.generateCouchDBUUID = commons.generateCouchDBUUID;
