@@ -66,7 +66,7 @@ To run these test, following module have to be installed (versions are detailed 
   
 # Cluster tests (for the cluster test to work, http://www.google.com must be reachable):
 
-* start the cluster `node ./test/app.js` (it should return two welcome messages, 
+* start the cluster `node --expose-gc ./test/app.js` (it should return two welcome messages, 
 with two different PIDs);
 * kill, from another shell, one of the processes (it should be re-spawn immediately with a different PID); 
 * execute 'curl -X GET "http://localhost:8080/hogmemory"' from another shell (it should signal too much

@@ -18,7 +18,7 @@
  */
 "use strict";
 
-var commons= exports;
+var commons = exports;
 
 var cluster = require("cluster");
 var child_process = require('child_process');
@@ -188,18 +188,37 @@ commons.startCluster = function(propertiesFile, name, startServer) {
         });
 
         /*
-         * Checks, at regular intervals, the memory consumption of the worker
+         * Checks, at regular intervals, the memory consumption of the worker.
+         * If it is above 80% of the threshold, forces a GC, if it is above the
+         * threshold, send a signal to shut it down and re-spawn.
          */
+        var condvarGC = false; // This is to set avoid re-forcing a GC while
+        // one is still underway
         setInterval(function(app) {
-          if (commons.getRSSMemoryMB() > Number(commons
-              .getProperty("nodejs.cluster.maxrssmemorymb"))) {
-            commons.logger.error("Process " + process.pid
-                + " has consumed more than " + commons.getRSSMemoryMB()
-                + " MBs");
+
+          var rssSize = commons.getRSSMemoryMB();
+          var maxRssSize = Number(commons
+              .getProperty("nodejs.cluster.maxrssmemorymb"));
+
+          if (!condvarGC && rssSize > maxRssSize) {
+            commons.logger.info("Process " + process.pid + " has consumed "
+                + rssSize + " MBs");
             process.send({
               message : messages.MEMORYALARM,
               pid : process.pid
             });
+            return;
+          }
+
+          if (!condvarGC && rssSize > (maxRssSize * 0.8)) {
+            condvarGC = true;
+            commons.logger.info("Process " + process.pid + " has consumed "
+                + rssSize + " MBs, forcing GC");
+            global.gc();
+            commons.logger.info("Process " + process.pid
+                + " after forcing GC consumes " + commons.getRSSMemoryMB()
+                + " MBs");
+            condvarGC = false;
           }
         }, commons.getProperty("nodejs.cluster.checkmemoryms"));
 
@@ -280,7 +299,7 @@ commons.setProperty = function(propertyName, propertyValue) {
 
 /**
  * Sets the usual headers of the response
- *
+ * 
  * @param args.response
  *          {Object} Response
  * @param args.status
@@ -307,7 +326,7 @@ commons.setResponseHeaders = function(args) {
 /**
  * Constructs a response for the return of a JSON object or, if the content-type
  * header is not application/json, of a string
- *
+ * 
  * @param args.response
  *          {Object} Response
  * @param args.status
@@ -462,4 +481,3 @@ commons.isEvalSafe = function(expr) {
 commons.generateCouchDBUUID = function() {
   return uuid.v4().replace(/-/g, "");
 };
-

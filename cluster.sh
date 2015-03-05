@@ -1,1 +1,1 @@
-node ./test/app.js 
+node --expose-gc ./test/app.js 

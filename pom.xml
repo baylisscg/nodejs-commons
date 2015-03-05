@@ -12,7 +12,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>au.org.aurin</groupId>
   <artifactId>nodejs-commons</artifactId>
-  <version>0.5.2</version>
+  <version>0.5.3</version>
 
   <properties>
     <version>${project.version}</version>
@@ -29,7 +29,7 @@
   <parent>
     <groupId>au.org.aurin</groupId>
     <artifactId>aurin-project</artifactId>
-    <version>0.2.6</version>
+    <version>0.5.0.A-SNAPSHOT</version>
   </parent>
 
   <repositories>
