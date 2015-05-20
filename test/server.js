@@ -22,29 +22,38 @@
  */
 "use strict"
 
-var buf = new Buffer(30000000);
+var buf = [ new Buffer(5000000), new Buffer(5000000), new Buffer(5000000) ];
 
 exports.startServer = function(commons, callback) {
-	var app=require("express")();
-	app.id = 1;
+  var app = require("express")();
+  app.id = 1;
 
-	app.get("/hogmemory", function(req, res) {
-		res.send("about to hog too mucn memory...\n");
-		buf.fill("x");
-	});
+  app.get("/hogmemory", function(req, res) {
+    res.send("about to hog too mucn memory...\n");
+    var funcFactory = function() {
+      var iter = 0;
+      return function() {
+        if (iter < buf.length) {
+          commons.logger.info("hogged another 5MB of memory\n");
+          buf[iter++].fill("x");
+        }
+      }
+    };
+    setInterval(funcFactory(), 1000);
+  });
 
-	app.get("/throwuncaught", function(req, res) {
-		throw (new Error("this is uncaught"));
-	});
+  app.get("/throwuncaught", function(req, res) {
+    throw (new Error("this is uncaught"));
+  });
 
-	require("http").request(
-			"http://www.google.com",
-			function(res) {
-				app.listen(commons.getProperty("aurin.test.port"));
-				commons.logger.info("Service test listening on http://localhost:"
-						+ commons.getProperty("aurin.test.port") + " started as process "
-						+ process.pid);
-				callback(commons, app);
-			}).end();
+  require("http").request(
+      "http://www.google.com",
+      function(res) {
+        app.listen(commons.getProperty("aurin.test.port"));
+        commons.logger.info("Service test listening on http://localhost:"
+            + commons.getProperty("aurin.test.port") + " started as process "
+            + process.pid);
+        callback(commons, app);
+      }).end();
 
 };

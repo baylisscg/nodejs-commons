@@ -34,9 +34,12 @@ defaults["nodejs.cluster.checkmemoryms"] = 1000;
 defaults["log.level"] = "info";
 defaults["maxage.default"] = 60;
 defaults["aurin.processes"] = 2;
+defaults["nodejs.cluster.forcegcfraction"] = 0.8;
+defaults["nodejs.cluster.minfractiontorecover"] = 0.05;
 
 require('enum').register();
-var messages = new Enum([ "MEMORYALARM", "EXCEPTIONALARM", "COMMITSUICIDE" ]);
+var messages = new Enum([ "MEMORYALARM", "UNABLETOGCALARM", "EXCEPTIONALARM",
+    "COMMITSUICIDE" ]);
 
 /**
  * Returns the number of processes to spawn. If property aurin.<name>.processes
@@ -65,6 +68,7 @@ commons.spawnApp = function() {
     // If an alarm is raised, message is detected sends a commitsuicide to the
     // process given in msg
     if (messages.MEMORYALARM.is(msg.message)
+        || messages.UNABLETOGCALARM.is(msg.message)
         || messages.EXCEPTIONALARM.is(msg.message)) {
       for ( var i in cluster.workers) {
         var worker = cluster.workers[i];
@@ -93,138 +97,180 @@ commons.spawnApp = function() {
 commons.startCluster = function(propertiesFile, name, startServer) {
 
   // Loads properties
-  commons.setup(propertiesFile, function(commons) {
+  commons
+      .setup(
+          propertiesFile,
+          function(commons) {
 
-    if (cluster.isMaster) {
+            if (cluster.isMaster) {
 
-      // Spawns processes
-      var nProcesses = commons.getNumberOfProcesses(name);
-      commons.logger.info("Spawning " + nProcesses + " processes for service "
-          + name);
+              // Spawns processes
+              var nProcesses = commons.getNumberOfProcesses(name);
+              commons.logger.info(util.format(
+                  "Spawning %s processes for service %s", nProcesses, name));
 
-      for (var i = 0; i < nProcesses; i++) {
-        commons.spawnApp();
-      }
-
-      // On disconnection, spawns a new app
-      cluster.on("disconnect", function() {
-        commons.spawnApp();
-      });
-
-      /*
-       * If the process is a worker
-       */
-    } else {
-      // Starts server
-      startServer(commons, function(commons, app) {
-
-        // Catches uncaught exceptions
-        app.use(app.router);
-        app.use(function(err, req, res, next) {
-          if (!err) {
-            return next()
-          } else {
-            commons.logger.error("Uncaught exception detected: " + err);
-            process.send({
-              message : messages.EXCEPTIONALARM,
-              pid : process.pid
-            });
-            return next();
-          }
-        });
-
-        // If app is null, exists
-        if (!app) {
-          commons.logger.error("Strangely enogouh, app is null, exiting");
-          process.exit(1);
-        }
-
-        // Defines a isClosing property to avoid re-closing a
-        // process that is shutting down
-        app.isClosing = false;
-
-        // Sets process's title
-        process.title = name;
-
-        // Process a message sent to the worked
-        process.on("message",
-            function(msg) {
-
-              // If the message is commitsuicde, flags it for
-              // shutdown
-              if (messages.COMMITSUICIDE.is(msg.message)
-                  && app.isClosing === false) {
-                commons.logger.error("Process " + this.pid
-                    + " slated for termination");
-
-                // On app closed, shuts the process down
-                app.on("close", function() {
-                  commons.logger.error("Process " + process.pid + " closed");
-                });
-
-                // Prevents the app from accepting new connections
-                app.isClosing = true;
-                app.emit("close");
-
-                // After a timeout, forces the shutting down
-                setTimeout(function() {
-                  commons.logger.error("Forcing  process " + process.pid
-                      + " to terminate");
-                  process.disconnect();
-                }, Number(commons.getProperty("nodejs.cluster.closewaitms")));
-
+              for (var i = 0; i < nProcesses; i++) {
+                commons.spawnApp();
               }
 
-            });
+              // On disconnection, spawns a new app
+              cluster.on("disconnect", function() {
+                commons.spawnApp();
+              });
 
-        // Signals the disconnection
-        process.on("disconnect", function() {
-          commons.logger.error("Process " + this.pid + " is now disconnected");
-        });
+              /*
+               * If the process is a worker
+               */
+            } else {
+              // Starts server
+              startServer(
+                  commons,
+                  function(commons, app) {
 
-        // Signals the shutting down
-        process.on("exit", function(code, signal) {
-          commons.logger.info("Process " + this.pid + " is now dead");
-        });
+                    // Catches uncaught exceptions
+                    app.use(app.router);
+                    app.use(function(err, req, res, next) {
+                      if (!err) {
+                        return next()
+                      } else {
+                        commons.logger.error("Uncaught exception detected: "
+                            + err);
+                        process.send({
+                          message : messages.EXCEPTIONALARM,
+                          pid : process.pid
+                        });
+                        return next();
+                      }
+                    });
 
-        /*
-         * Checks, at regular intervals, the memory consumption of the worker.
-         * If it is above 80% of the threshold, forces a GC, if it is above the
-         * threshold, send a signal to shut it down and re-spawn.
-         */
-        var condvarGC = false; // This is to set avoid re-forcing a GC while
-        // one is still underway
-        setInterval(function(app) {
+                    // If app is null, exists
+                    if (!app) {
+                      commons.logger
+                          .error("Strangely enough, app is null, exiting");
+                      process.exit(1);
+                    }
 
-          var rssSize = commons.getRSSMemoryMB();
-          var maxRssSize = Number(commons
-              .getProperty("nodejs.cluster.maxrssmemorymb"));
+                    // Defines a isClosing property to avoid re-closing a
+                    // process that is shutting down
+                    app.isClosing = false;
 
-          if (!condvarGC && rssSize > maxRssSize) {
-            commons.logger.info("Process " + process.pid + " has consumed "
-                + rssSize + " MBs");
-            process.send({
-              message : messages.MEMORYALARM,
-              pid : process.pid
-            });
-            return;
-          }
+                    // Sets process's title
+                    process.title = name;
 
-          if (!condvarGC && rssSize > (maxRssSize * 0.8)) {
-            condvarGC = true;
-            commons.logger.info("Process " + process.pid + " has consumed "
-                + rssSize + " MBs, forcing GC");
-            global.gc();
-            commons.logger.info("Process " + process.pid
-                + " after forcing GC consumes " + commons.getRSSMemoryMB()
-                + " MBs");
-            condvarGC = false;
-          }
-        }, commons.getProperty("nodejs.cluster.checkmemoryms"));
+                    // Process a message sent to the worked
+                    process.on("message", function(msg) {
 
-      });
-    }
-  });
+                      // If the message is commitsuicde, flags it for
+                      // shutdown
+                      if (messages.COMMITSUICIDE.is(msg.message)
+                          && app.isClosing === false) {
+                        commons.logger.info(util.format(
+                            "Process %s slated for termination", +this.pid));
+
+                        // On app closed, shuts the process down
+                        app.on("close", function() {
+                          commons.logger.info(util.format("Process %s closed",
+                              process.pid));
+                        });
+
+                        // Prevents the app from accepting new connections
+                        app.isClosing = true;
+                        app.emit("close");
+
+                        // After a timeout, forces the shutting down
+                        setTimeout(
+                            function() {
+                              commons.logger.info(util.format(
+                                  "Forcing  process %s to terminate",
+                                  process.pid));
+                              process.disconnect();
+                            }, Number(commons
+                                .getProperty("nodejs.cluster.closewaitms")));
+
+                      }
+
+                    });
+
+                    // Signals the disconnection
+                    process.on("disconnect", function() {
+                      commons.logger.info(util.format(
+                          "Process %s is now disconnected", this.pid));
+                    });
+
+                    // Signals the shutting down
+                    process.on("exit", function(code, signal) {
+                      commons.logger.info(util.format("Process %s is now dead",
+                          this.pid));
+                    });
+
+                    /*
+                     * Checks, at regular intervals, the memory consumption of
+                     * the worker. If it is above 80% of the threshold, forces a
+                     * GC, if it is above the threshold, send a signal to shut
+                     * it down and re-spawn.
+                     */
+                    var condvarGC = false; // This is to set avoid re-forcing a
+                    // GC while
+                    // one is still underway
+
+                    setInterval(
+                        function(app) {
+
+                          var rssSize = commons.getRSSMemoryMB();
+                          var maxRssSize = Number(commons
+                              .getProperty("nodejs.cluster.maxrssmemorymb"));
+
+                          if (!condvarGC && rssSize > maxRssSize) {
+                            commons.logger.info(util.format(
+                                "Process %s has consumed %sMBs", process.pid,
+                                rssSize));
+                            process.send({
+                              message : messages.MEMORYALARM,
+                              pid : process.pid
+                            });
+                            return;
+                          }
+
+                          if (!condvarGC
+                              && rssSize > (maxRssSize * commons
+                                  .getProperty("nodejs.cluster.forcegcfraction"))) {
+                            condvarGC = true;
+
+                            commons.logger.info(util.format(
+                                "Process %s has consumed %sMB, forcing GC",
+                                process.pid, rssSize));
+                            global.gc();
+                            commons.logger.info(util.format(
+                                "Process %s after forcing GC consumes %sMB",
+                                process.pid, commons.getRSSMemoryMB()));
+                            condvarGC = false;
+
+                            // If the memory relased by GC is less than a
+                            // gioven fraction of
+                            // the max allowed RSS size, suicide is scheduled
+                            var gcFreedRSS = commons.getRSSMemoryMB() - rssSize;
+                            var minFreedRSS = maxRssSize
+                                * commons
+                                    .getProperty("nodejs.cluster.minfractiontorecover");
+                            if (gcFreedRSS < minFreedRSS) {
+                              commons.logger
+                                  .info(util
+                                      .format(
+                                          "The Garbage Collection was not able to bring down the amount of memory used by process "
+                                              + "%s, since only %sMB were recovered, which is less than the %sMB required",
+                                          process.pid, gcFreedRSS, minFreedRSS));
+                              process.send({
+                                message : messages.UNABLETOGCALARM,
+                                pid : process.pid
+                              });
+                              return;
+                            }
+                          }
+                        }, commons.getProperty("nodejs.cluster.checkmemoryms"));
+
+                  });
+            }
+          });
 };
 
 /**

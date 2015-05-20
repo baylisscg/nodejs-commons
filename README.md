@@ -70,7 +70,7 @@ To run these test, following module have to be installed (versions are detailed 
 with two different PIDs);
 * kill, from another shell, one of the processes (it should be re-spawn immediately with a different PID); 
 * execute 'curl -X GET "http://localhost:8080/hogmemory"' from another shell (it should signal too much
-memory used, wait 3s, commit suicide, and another process re-spawned immediately);
+memory used, try to GC it, wait 3s, commit suicide, and another process re-spawned immediately);
 * execute 'curl -X GET "http://localhost:8080/throwuncaught"' from another shell (it should signal an uncaught 
 exception, wait 3s, commit suicide, and another process re-spawned immediately);
 * execute 'ps -ef | grep test', it should show two, and only two, processes. 
