@@ -516,7 +516,28 @@ commons.debug = function(obj) {
  *          Expression to check
  */
 commons.isEvalSafe = function(expr) {
-  return !(/[\(\)\{}\}]/.test(String(expr)));
+
+  var isWithinQuotes = false;
+  var xChars = /[/(/)/{/}]/;
+  var quoteChars = /["']/;
+
+  if (!expr) {
+    return true;
+  }
+
+  for (var i = 0; i < expr.length; i++) {
+    var c = expr.substr(i, 1);
+
+    if (quoteChars.test(c)) {
+      isWithinQuotes = isWithinQuotes ? false : true;
+    }
+
+    if (xChars.test(c) && !isWithinQuotes) {
+      return false;
+    }
+  }
+
+  return true;
 };
 
 /**

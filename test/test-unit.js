@@ -113,7 +113,17 @@ describe("test-unit.js", function() {
       expect(commons.isEvalSafe("}")).to.be.false;
       expect(commons.isEvalSafe("(")).to.be.false;
       expect(commons.isEvalSafe(")")).to.be.false;
-      expect(commons.isEvalSafe("a==false")).to.be.true;
+      expect(commons.isEvalSafe("a=='Hospital (emergency)'")).to.be.true;
+      expect(commons.isEvalSafe("a=='Hospital {emergency}'")).to.be.true;
+      expect(commons.isEvalSafe("a=='Hospital [emergency]'")).to.be.true;
+      expect(commons.isEvalSafe('a=="Hospital (emergency)"')).to.be.true;
+      expect(commons.isEvalSafe('a=="Hospital {emergency}"')).to.be.true;
+      expect(commons.isEvalSafe('a=="Hospital [emergency]"')).to.be.true;
+      expect(commons.isEvalSafe('a==eval("Hospital [emergency]")')).to.be.false;
+      expect(commons.isEvalSafe('a==new Object("Hospital")')).to.be.false;
+      expect(commons.isEvalSafe('eval("shell(\'rm *\')")')).to.be.false;
+      expect(commons.isEvalSafe("eval('shell(\"rm *\")')")).to.be.false;
+      expect(commons.isEvalSafe("'\"'+eval('shell(\"rm *\")')")).to.be.false;
       done();
     });
 
