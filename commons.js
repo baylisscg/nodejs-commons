@@ -28,13 +28,13 @@ var uuid = require("node-uuid");
 // Default values of properties (they are set in absence of
 // values provided in the file)
 var defaults = {};
-defaults["nodejs.cluster.maxrssmemorymb"] = 1500;
+defaults["nodejs.cluster.maxrssmemorymb"] = 1740;
 defaults["nodejs.cluster.closewaitms"] = 20000;
 defaults["nodejs.cluster.checkmemoryms"] = 1000;
 defaults["log.level"] = "info";
 defaults["maxage.default"] = 60;
 defaults["aurin.processes"] = 2;
-defaults["nodejs.cluster.forcegcfraction"] = 0.8;
+defaults["nodejs.cluster.forcegcfraction"] = 0.85;
 defaults["nodejs.cluster.minfractiontorecover"] = 0.05;
 
 require('enum').register();
@@ -248,7 +248,7 @@ commons.startCluster = function(propertiesFile, name, startServer) {
                             // If the memory relased by GC is less than a
                             // gioven fraction of
                             // the max allowed RSS size, suicide is scheduled
-                            var gcFreedRSS = commons.getRSSMemoryMB() - rssSize;
+                            var gcFreedRSS = rssSize - commons.getRSSMemoryMB();
                             var minFreedRSS = maxRssSize
                                 * commons
                                     .getProperty("nodejs.cluster.minfractiontorecover");
