@@ -34,9 +34,7 @@ Objects:
 
 ## Pre-requirements
 
-* Node.js v0.10.x
-* Mocha 1.14.x should be installed (globally):
-  `npm -g update mocha@1.14.0`
+* Node.js v4.2.x
 
 
 ## Installation
@@ -58,11 +56,17 @@ To run these test, following module have to be installed (versions are detailed 
 
 * Chai
 * Express
+* Mocha
+
+In addition, Maven has to be run once to write the properties file
+
+  `mvn test -Ddeployment=test -Dsystem=luca-dev`
   
 
 # Unit tests:
 
-  `mocha`
+  `npm run unitest`
+  
   
 # Cluster tests (for the cluster test to work, http://www.google.com must be reachable):
 

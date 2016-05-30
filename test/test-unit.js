@@ -23,6 +23,7 @@ var assert = chai.assert;
 var expect = chai.expect;
 var should = chai.should();
 var commons = require("../commons");
+var _ = require("underscore");
 
 describe("test-unit.js", function() {
 
@@ -33,16 +34,21 @@ describe("test-unit.js", function() {
     // to access commons before it has initialised.
     // We need a better solution than this.
     setTimeout(done, 1000);
+    commons.setup("./test/test.properties", function(lib) {
+      done();
+      });
     // done(); // This is what we should do.
   });
 
+  describe("commons", function() {
+    
     it("the property exists", function(done) {
       should.exist(commons.getProperty("maxage.default"),
           "max-age does not exist");
       done();
     });
 
-    it("the property is undefine", function(done) {
+    it("the property is undefined", function(done) {
       expect("undefined").equal(typeof commons.getProperty("xxx"));
       done();
     });
@@ -132,9 +138,88 @@ describe("test-unit.js", function() {
       expect(commons.generateCouchDBUUID().match("-")).equal(null);
       done();
     });
+});
 
+      describe("getConsulValue", function() {
+        it("should return an ASCII value", function(done) {
+          expect(commons.getConsulValue([ {
+            CreateIndex : 4,
+            ModifyIndex : 127,
+            LockIndex : 0,
+            Key : "dataregistry/url",
+            Flags : 0,
+            Value : "aHR0cHM6Ly9sb2NhbGhvc3Q6MTAwODMvZGF0YV9yZWdpc3RyeQ=="
+          } ])).equal("https://localhost:10083/data_registry");
+          done();
+        });
+      });
+
+      describe("composeUrl", function() {
+        it("should return a URL", function(done) {
+          expect(commons.composeUrl("https://localhost:10083", "data_registry"))
+              .equal("https://localhost:10083/data_registry");
+          expect(commons.composeUrl("https://localhost:10083/", "data_registry"))
+              .equal("https://localhost:10083/data_registry");
+          expect(commons.composeUrl("https://localhost:10083/", "/data_registry"))
+              .equal("https://localhost:10083/data_registry");
+          expect(
+              commons.composeUrl("https://localhost:10083/", "data_registry",
+                  "workspace", "index.html")).equal(
+              "https://localhost:10083/data_registry/workspace/index.html");
+          done();
+        });
+      });
+
+      describe("Event class", function() {
+        it("should return a valid object when parsing from the toJSON method", function(
+            done) {
+          var e = new commons.Event("ERROR", "module", 200, "message", "stack");
+          expect(e.severity).equals("error");
+          expect(e.module).equals("module");
+          expect(e.message).equals("message");
+          expect(e.code).equals(200);
+          expect(e.stack).equals("stack");
+          done();
+        });
+
+        it("should throw an error when the severity is incorrect", function(done) {
+          try {
+            var e = new commons.Event("xxx", "module", 200,
+                "message", "stack");
+          } catch (e) {
+            expect(e.message).equals(
+                "Event severity can only be undefined, 'info', or 'error'");
+          }
+          done();
+        });
+      });
+      
+      describe("asBoolan function", function() {
+        it("should return a valid boolean", function(
+            done) {
+          expect(commons.asBoolean(true)).equals(true);
+          expect(commons.asBoolean("true")).equals(true);
+          expect(commons.asBoolean(false)).equals(false);
+          expect(commons.asBoolean("false")).equals(false);
+          expect(commons.asBoolean(undefined)).equals(false);
+          expect(commons.asBoolean(null)).equals(false);
+          done();
+        });
+
+        it("should throw an error when the severity is incorrect", function(done) {
+          try {
+            var e = new commons.Event("xxx", "module", 200,
+                "message", "stack");
+          } catch (e) {
+            expect(e.message).equals(
+                "Event severity can only be undefined, 'info', or 'error'");
+          }
+          done();
+        });
+      });
+      
     after(function(done) {
       console.log("...end of testing");
       done();
     });
-  });
+});

@@ -24,6 +24,7 @@ var cluster = require("cluster");
 var child_process = require('child_process');
 var util = require("util");
 var uuid = require("node-uuid");
+var log4js = require("log4js");
 
 // Default values of properties (they are set in absence of
 // values provided in the file)
@@ -547,4 +548,138 @@ commons.isEvalSafe = function(expr) {
  */
 commons.generateCouchDBUUID = function() {
   return uuid.v4().replace(/-/g, "");
+};
+
+/**
+ * Returns a Boolean value out of an input that may be a Boolean or a String (if
+ * unedfined or null, it is considered false)
+ * 
+ * @param {String|Boolean}
+ *          logi Logical value
+ * @return {Boolean}
+ */
+commons.asBoolean = function(logi) {
+  return (logi == true || logi == "true");
+};
+
+/**
+ * Joins some fragments to make an URL
+ * 
+ * @param {Object}
+ *          json Body of JSON response
+ * @return {String}
+ */
+commons.composeUrl = function() {
+  var args = (arguments.length === 1 ? [ arguments[0] ] : Array.apply(null,
+      arguments));
+  return args.join("/").replace(/([^:]\/)\/+/g, "$1");
+};
+
+/**
+ * Returns the value of a Consul key/value as a string
+ * 
+ * @param {Object}
+ *          json Body of JSON response
+ * @return {String}
+ */
+commons.getConsulValue = function(json) {
+  try {
+    return (new Buffer(json[0].Value, "base64")).toString();
+  } catch (e) {
+    (new module.exports.Event("error", "getConsulValue", "error", [ e.title,
+        e.message ].join(" "), e.stack)).toConsole();
+    return null;
+  }
+};
+
+/**
+ * Check the presence of an OGC error in the data returned by a request
+ * 
+ * @param data
+ *          {Object} Data as returned by a Response object
+ */
+commons.isInError = function(data) {
+  var result = (typeof data === "string") ? data : JSON.stringify(data);
+  return result && result.indexOf("exceptionCode") > 0
+};
+
+/**
+ * Setup of the logger
+ * 
+ * @param conf
+ *          {Object} General configuration of the app
+ */
+commons.initLogger = function(conf) {
+  log4js.configure({
+    appenders : [ {
+      type : "file",
+      filename : conf["log-file"],
+      category : "monitor",
+      layout : {
+        type : 'pattern',
+        pattern : "[%d{yyyy-MM-dd hh:mm:ss.SSSO}] [%p] %c - %m"
+      }
+    } ],
+    replaceConsole : true
+  });
+};
+
+/**
+ * Handles the errors of a given request, raising an error if needed
+ * 
+ * @param req
+ *          {Object} The request to handle errors of
+ * @param moduleName
+ *          {String} Name of the module to log
+ * @param done
+ *          {Function} The callback to call, with an error parameter in case of
+ *          error
+ */
+commons.handleRequestErrors = function(req, moduleName, done) {
+
+  req.on("requestTimeout", function(req) {
+    req.emit("error", new Error("Request has expired "));
+  });
+
+  req.on("responseTimeout", function(res) {
+    req.emit("error", new Error("Response has expired "));
+  });
+
+  req.on("error", function(err) {
+    (new module.exports.Event("error", moduleName, err.name, err.message,
+        err.stack)).toConsole();
+    done(err);
+  });
+
+};
+
+/**
+ * Class representing an event
+ */
+commons.Event = class
+{
+
+  constructor(severity, module, code, message, stack)
+  {
+    this.severity = "info" && severity.toLowerCase();
+    if (this.severity !== "info" && this.severity !== "error") {
+      throw new Error(
+          "Event severity can only be undefined, 'info', or 'error'");
+    }
+    this.module = module || "";
+    this.code = code || 0;
+    this.message = message || "";
+    this.stack = stack || "";
+  }
+
+  toString()
+  {
+    return [ this.code, this.module, "[", this.message, this.stack, "]" ]
+        .join(" ");
+  }
+
+  toConsole()
+  {
+    log4js.getLogger("monitor")[this.severity](this.toString());
+  }
 };
