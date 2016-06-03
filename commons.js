@@ -614,7 +614,7 @@ commons.initLogger = function(conf) {
     appenders : [ {
       type : "file",
       filename : conf["log-file"],
-      category : "monitor",
+      category : conf["category"],
       layout : {
         type : 'pattern',
         pattern : "[%d{yyyy-MM-dd hh:mm:ss.SSSO}] [%p] %c - %m"
@@ -622,6 +622,7 @@ commons.initLogger = function(conf) {
     } ],
     replaceConsole : false
   });
+  commons.Event.category= conf["category"];
 };
 
 /**
@@ -680,6 +681,6 @@ commons.Event = class
 
   toConsole()
   {
-    log4js.getLogger("monitor")[this.severity](this.toString());
+    log4js.getLogger(commons.Event.category)[this.severity](this.toString());
   }
 };

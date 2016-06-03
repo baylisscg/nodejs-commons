@@ -19,6 +19,7 @@
 
 var Properties = require("properties");
 var chai = require("chai");
+var fs = require("fs");
 var assert = chai.assert;
 var expect = chai.expect;
 var should = chai.should();
@@ -170,10 +171,23 @@ describe("test-unit.js", function() {
         });
       });
 
+      describe("initLooger", function() {
+      it("should just work", function(done) {
+        try {
+          commons.initLogger({category:"logcategory", "log-file":"/tmp/a.log"});
+        } catch (e) {
+          expect(true).equal(false);
+        }
+        expect(true).equal(true);
+        done();
+      });
+      });
+
       describe("Event class", function() {
         it("should return a valid object when parsing from the toJSON method", function(
             done) {
           var e = new commons.Event("ERROR", "module", 200, "message", "stack");
+          expect(e.severity).equals("error");
           expect(e.severity).equals("error");
           expect(e.module).equals("module");
           expect(e.message).equals("message");
@@ -192,6 +206,21 @@ describe("test-unit.js", function() {
           }
           done();
         });
+        
+        it("should write to the log file", function(
+            done) {
+          var logFile= "/tmp/test.log";
+          fs.unlink(logFile, function(err){
+            commons.initLogger({category:"logcategory", "log-file":logFile});
+            var e = new commons.Event("ERROR", "module", 200, "message", "stack");
+            e.toConsole();
+            fs.readFile(logFile, function(err, txt) {
+              expect(txt.toString().indexOf("[ERROR] logcategory - 200 module [ message stack ]")).above(0);
+              done();
+            });
+          });
+        });
+ 
       });
       
       describe("asBoolan function", function() {
@@ -203,17 +232,6 @@ describe("test-unit.js", function() {
           expect(commons.asBoolean("false")).equals(false);
           expect(commons.asBoolean(undefined)).equals(false);
           expect(commons.asBoolean(null)).equals(false);
-          done();
-        });
-
-        it("should throw an error when the severity is incorrect", function(done) {
-          try {
-            var e = new commons.Event("xxx", "module", 200,
-                "message", "stack");
-          } catch (e) {
-            expect(e.message).equals(
-                "Event severity can only be undefined, 'info', or 'error'");
-          }
           done();
         });
       });

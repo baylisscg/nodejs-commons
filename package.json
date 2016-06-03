@@ -1,6 +1,6 @@
 {
   "name" : "nodejs-commons",
-  "version" : "0.6.0",
+  "version" : "0.6.1",
   "description" : "Library of functions used by all Node.js projects in AURIN",
   "license" : "Apache-2.0",
   "private" : false,
