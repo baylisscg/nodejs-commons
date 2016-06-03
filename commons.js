@@ -598,7 +598,7 @@ commons.getConsulValue = function(json) {
  * @param data
  *          {Object} Data as returned by a Response object
  */
-commons.isInError = function(data) {
+commons.isOGCInError = function(data) {
   var result = (typeof data === "string") ? data : JSON.stringify(data);
   return result && result.indexOf("exceptionCode") > 0
 };
@@ -620,7 +620,7 @@ commons.initLogger = function(conf) {
         pattern : "[%d{yyyy-MM-dd hh:mm:ss.SSSO}] [%p] %c - %m"
       }
     } ],
-    replaceConsole : true
+    replaceConsole : false
   });
 };
 
