@@ -614,7 +614,7 @@ commons.initLogger = function(conf) {
     appenders : [ {
       type : "file",
       filename : conf["log-file"],
-      category : conf["category"],
+      category : conf["log-category"],
       layout : {
         type : 'pattern',
         pattern : "[%d{yyyy-MM-dd hh:mm:ss.SSSO}] [%p] %c - %m"
@@ -622,7 +622,7 @@ commons.initLogger = function(conf) {
     } ],
     replaceConsole : false
   });
-  commons.Event.category= conf["category"];
+  commons.Event.category= conf["log-category"];
 };
 
 /**
