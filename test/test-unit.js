@@ -211,7 +211,7 @@ describe("test-unit.js", function() {
             done) {
           var logFile= "/tmp/test.log";
           fs.unlink(logFile, function(err){
-            commons.initLogger({category:"logcategory", "log-file":logFile});
+            commons.initLogger({"log-category":"logcategory", "log-file":logFile});
             var e = new commons.Event("ERROR", "module", 200, "message", "stack");
             e.toConsole();
             fs.readFile(logFile, function(err, txt) {
