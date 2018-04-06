@@ -2,10 +2,12 @@
   "name": "ARTIFACTID",
   "version": "ARTIFACTVERSION",
   "description": "Library of functions used by all Node.js projects in AURIN",
-  "licenses" : [{
-    "type": "Apache",
-    "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
-  }],
+  "licenses": [
+    {
+      "type": "Apache",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  ],
   "private": false,
   "keywords": [
     "log",
@@ -16,6 +18,7 @@
     "name": "Luca Morandini",
     "email": "luca.morandini@unimelb.edu.au"
   },
+  "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/AURIN/nodejs-commons.git"
@@ -26,11 +29,15 @@
     "properties": "PROPERTIESVERSION",
     "enum": "ENUMVERSION",
     "tracer": "TRACERVERSION",
-    "node-uuid": "UUIDVERSION"
+    "node-uuid": "UUIDVERSION",
+    "express": "EXPRESSVERSION",
+    "underscore": "UNDERSCOREVERSION",
+    "log4js": "LOG4JSVERSION"
   },
   "devDependencies": {
-    "express": "EXPRESSVERSION",
-    "chai": "CHAIVERSION"
+    "mocha": "MOCHAVERSION",
+    "chai": "CHAIVERSION",
+    "sandboxed-module": "SANDBOXEDVERSION"
   },
   "scripts": {},
   "engines": {
