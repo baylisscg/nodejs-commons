@@ -128,7 +128,7 @@
         <version>1.5.1</version>
         <executions>
           <execution>
-            <phase>compile</phase>
+            <phase>generate-sources</phase>
             <goals>
               <goal>replace</goal>
             </goals>

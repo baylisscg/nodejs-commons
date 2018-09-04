@@ -1,0 +1,8 @@
+---
+steps:
+  - label: 'Compile'
+    command: './build.sh'
+    env:
+      - NEXUS_USER
+      - NEXUS_SECRET
+...

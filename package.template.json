@@ -37,9 +37,13 @@
   "devDependencies": {
     "mocha": "MOCHAVERSION",
     "chai": "CHAIVERSION",
-    "sandboxed-module": "SANDBOXEDVERSION"
+    "sandboxed-module": "SANDBOXEDVERSION",
+    "eslint": "^5.5.0"
   },
-  "scripts": {},
+  "scripts": {
+    "lint": "eslint *.js **/*.js",
+    "test": "mocha ./test"
+  },
   "engines": {
     "node": "NODEVERSION"
   },

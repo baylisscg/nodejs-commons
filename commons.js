@@ -21,7 +21,7 @@
 var commons = exports;
 
 var cluster = require("cluster");
-var child_process = require('child_process');
+var child_process = require("child_process");
 var util = require("util");
 var uuid = require("node-uuid");
 var log4js = require("log4js");
@@ -40,7 +40,7 @@ defaults["nodejs.cluster.minfractiontorecover"] = 0.05;
 defaults["contentype"] = "application/json";
 defaults["objectlength"] = 0.;
 
-require('enum').register();
+require("enum").register();
 var messages = new Enum(["MEMORYALARM", "UNABLETOGCALARM", "EXCEPTIONALARM",
   "COMMITSUICIDE"]);
 
@@ -134,7 +134,7 @@ commons.startCluster = function (propertiesFile, name, startServer) {
               app.use(app.router);
               app.use(function (err, req, res, next) {
                 if (!err) {
-                  return next()
+                  return next();
                 } else {
                   commons.logger.error("Uncaught exception detected: "
                     + err);
@@ -602,7 +602,7 @@ commons.getConsulValue = function (json) {
  */
 commons.isOGCInError = function (data) {
   var result = (typeof data === "string") ? data : JSON.stringify(data);
-  return result && result.indexOf("exceptionCode") > 0
+  return result && result.indexOf("exceptionCode") > 0;
 };
 
 /**
@@ -618,7 +618,7 @@ commons.initLogger = function (conf) {
       filename: conf["log-file"],
       category: conf["log-category"],
       layout: {
-        type: 'pattern',
+        type: "pattern",
         pattern: "[%d{yyyy-MM-dd hh:mm:ss.SSSO}] [%p] %c - %m"
       }
     }],
