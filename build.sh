@@ -50,7 +50,7 @@ function run_tests {
 
 function run {
     setUp
-    lint
+#    lint
     run_tests
 }
 
