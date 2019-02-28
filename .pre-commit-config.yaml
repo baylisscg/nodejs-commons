@@ -1,0 +1,16 @@
+---
+repos:
+  - repo: "https://github.com/pre-commit/pre-commit-hooks"
+    rev: "v2.1.0"
+    hooks:
+      - id: "check-case-conflict"
+      - id: "check-xml"
+      - id: "trailing-whitespace"
+  - repo: "https://github.com/prettier/prettier"
+    rev: "1.16.4"
+    hooks:
+      - id: "prettier"
+  - repo: "https://github.com/baylisscg/pre-commit-hooks"
+    rev: "9a94159de25c3c579b5a8dfc812ccd3270831dc9"
+    hooks:
+      - id: google-style-java

@@ -1,8 +1,13 @@
 ---
 steps:
-  - label: 'Compile'
-    command: './build.sh'
-    env:
-      - NEXUS_USER
-      - NEXUS_SECRET
-...
+  - label: "Linting :lint-roller:"
+    command: "git diff-tree --no-commit-id --name-only -r ${BUILDKITE_COMMIT} | xargs pre-commit run --files"
+  - label: "Test"
+    commands:
+      - "./build.sh"
+      - "npm install"
+      - "npm test"
+  - label: "Sonar"
+    #branches: "develop"
+    commands:
+      - ".buildkite/sonar.sh"
