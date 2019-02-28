@@ -8,6 +8,6 @@ steps:
       - "npm install"
       - "npm test"
   - label: "Sonar"
-    #branches: "develop"
+    branches: "develop"
     commands:
       - ".buildkite/sonar.sh"

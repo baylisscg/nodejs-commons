@@ -7,25 +7,36 @@ set -o pipefail
 DEPENDENCY_CHECK="$(which dependency-check)"
 SONAR_SCANNER="$(which sonar-scanner)"
 
-#"./build.sh"
-#"npm install"
-#      - "npm coverage"
-#      - "dependency-check --project \"AURIN NodeJS Commons\" --format=ALL --scan \"commons.js\" --scan=package.json  --enableExperimental --out=dependency-check --log=./dependency-check.log --scan=package-lock.json"
-#      - "sonar-scanner -Dsonar.host.url=${SONAR_HOST} -Dsonar.login=${SONAR_SECRET} -Dsonar.projectVersion=0.6.3"
-
 function doSonar {
-  ${SONAR_SCANNER} -Dsonar.host.url="${SONAR_URL}" -Dsonar.login="${SONAR_TOKEN}" -Dsonar.projectVersion=0.6.3
+  ${SONAR_SCANNER} -Dsonar.host.url="${SONAR_URL}" \
+                   -Dsonar.login="${SONAR_TOKEN}" \
+                   s-Dsonar.projectVersion=0.6.3
 }
 
 function doDependencyCheck {
-    ${DEPENDENCY_CHECK} --project "AURIN NodeJS Commons" --format=ALL --scan "commons.js" --scan=package.json  --enableExperimental --out=dependency-check --log=./dependency-check.log --scan=package-lock.json
+    ${DEPENDENCY_CHECK} --project "AURIN NodeJS Commons" \
+                        --format=ALL \
+                        --scan "commons.js" --scan=package.json --scan=package-lock.json \
+                        --enableExperimental \
+                        --out=dependency-check \
+                        --log=dependency-check/dependency-check.log \
+                        --data="${HOME}/.dependency-check/"
+}
+
+function setUp {
+  local location="$(dirname $0)"
+  ${location}/../build.sh
+  mkdir -p dependecy-check
+}
+
+function runTestsWithCoverage {
+  npm install
+  npm run coverage
 }
 
 function main {
-  local location="$(dirname $0)"
-  ${location}/../build.sh
-  npm install
-  npm run coverage
+  setUp
+  runTestsWithCoverage
   doDependencyCheck
   doSonar
 }
