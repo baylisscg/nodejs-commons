@@ -1,0 +1,12 @@
+# Files not to include in NPM package
+
+.buildkite/
+build/
+test/
+.ci.settings.xml
+.pre-commit-config.yaml
+buildNumber.properties
+pom.xml
+package.template.json
+cluster.sh
+build.sh

@@ -9,11 +9,7 @@
     }
   ],
   "private": false,
-  "keywords": [
-    "log",
-    "cluster",
-    "properties"
-  ],
+  "keywords": ["log", "cluster", "properties"],
   "author": {
     "name": "Luca Morandini",
     "email": "luca.morandini@unimelb.edu.au"
@@ -47,11 +43,5 @@
   "engines": {
     "node": "NODEVERSION"
   },
-  "_id": "GROUPID.ARTIFACTID@ARTIFACTVERSION",
-  "optionalDependencies": {},
-  "_engineSupported": true,
-  "_npmVersion": "NPMVERSION",
-  "_nodeVersion": "NODEVERSION",
-  "_defaultsLoaded": false,
-  "_from": ""
+  "optionalDependencies": {}
 }

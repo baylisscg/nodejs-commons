@@ -5,3 +5,7 @@
 /t.sh
 /.project
 .tern-project
+.nyc_output/
+.scannerwork/
+dependency-check
+dependency-check.log
