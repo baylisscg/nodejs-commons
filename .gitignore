@@ -8,4 +8,9 @@
 .nyc_output/
 .scannerwork/
 dependency-check
-dependency-check.log
+.scannerwork
+node/
+/.idea/
+/.nyc_output/
+target
+*.log
