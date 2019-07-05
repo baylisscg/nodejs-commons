@@ -38,7 +38,6 @@
     "nyc": "^11.0.0"
   },
   "scripts": {
-    "lint": "/usr/bin/true",
     "test": "mocha \"./test/test*.js\" --reporter mocha-junit-reporter --reporter list",
     "ci": "nyc mocha \"./test/test*.js\" --reporter mocha-junit-reporter --reporter-options mochaFile=target/junit.xml"
   },
