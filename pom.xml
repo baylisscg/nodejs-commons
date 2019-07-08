@@ -231,9 +231,37 @@
                 <sonar.sources>./</sonar.sources>
                 <sonar.tests>./test</sonar.tests>
                 <sonar.javascript.lcov.reportPaths>target/coverage/lcov.info</sonar.javascript.lcov.reportPaths>
+
             </properties>
             <build>
                 <plugins>
+                    <plugin>
+                        <groupId>org.owasp</groupId>
+                        <artifactId>dependency-check-maven</artifactId>
+                        <version>5.1.0</version>
+                        <configuration>
+                            <formats>HTML,XML</formats>
+                            <nodeAnalyzerEnabled>true</nodeAnalyzerEnabled>
+                            <retireJsAnalyzerEnabled>true</retireJsAnalyzerEnabled>
+                            <scanSet>
+                                <fileSet>
+                                    <directory>${project.basedir}</directory>
+                                    <includes>
+                                        <include>package.json</include>
+                                        <include>commons.js</include>
+                                        <include>test/*</include>
+                                    </includes>
+                                </fileSet>
+                            </scanSet>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
                     <plugin>
                         <groupId>com.github.eirslett</groupId>
                         <artifactId>frontend-maven-plugin</artifactId>

@@ -9,7 +9,11 @@
     }
   ],
   "private": false,
-  "keywords": ["log", "cluster", "properties"],
+  "keywords": [
+    "log",
+    "cluster",
+    "properties"
+  ],
   "author": {
     "name": "Luca Morandini",
     "email": "luca.morandini@unimelb.edu.au"

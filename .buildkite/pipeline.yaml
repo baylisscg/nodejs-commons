@@ -2,14 +2,15 @@
 steps:
   - label: "Linting :lint-roller:"
     command: "git diff-tree --no-commit-id --name-only -r ${BUILDKITE_COMMIT} | xargs pre-commit run --files"
-  - label: "Test"
+  - label: "Test :maven::npm:"
+    branches: "!develop"
     commands:
       - "mvn clean verify"
-  - label: "Sonar"
+  - label: "Test :maven::npm::sonarqube:"
     branches: "develop"
     commands:
       - "mvn clean verify sonar:sonar"
-  - label: "Deploy"
+  - label: "Deploy :maven::npm:"
     branches: "develop"
     commands:
       - "mvn clean deploy"
