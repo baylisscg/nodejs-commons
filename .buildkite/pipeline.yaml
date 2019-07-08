@@ -4,10 +4,12 @@ steps:
     command: "git diff-tree --no-commit-id --name-only -r ${BUILDKITE_COMMIT} | xargs pre-commit run --files"
   - label: "Test"
     commands:
-      - "./build.sh"
-      - "npm install"
-      - "npm test"
+      - "mvn clean verify"
   - label: "Sonar"
     branches: "develop"
     commands:
-      - ".buildkite/sonar.sh"
+      - "mvn clean verify sonar:sonar"
+  - label: "Deploy"
+    branches: "develop"
+    commands:
+      - "mvn clean deploy"

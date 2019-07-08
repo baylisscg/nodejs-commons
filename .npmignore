@@ -10,3 +10,13 @@ pom.xml
 package.template.json
 cluster.sh
 build.sh
+node/
+.eslint*
+sonar-project.properties
+.nvmrc
+/.idea/
+dependency-check/
+/.nyc_output/
+.scannerwork
+dependency-check*
+.tern-project

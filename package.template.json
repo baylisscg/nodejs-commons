@@ -31,14 +31,15 @@
     "log4js": "LOG4JSVERSION"
   },
   "devDependencies": {
+    "mocha-junit-reporter": "1.15.0",
     "mocha": "MOCHAVERSION",
     "chai": "CHAIVERSION",
     "sandboxed-module": "SANDBOXEDVERSION",
-    "eslint": "^5.5.0"
+    "nyc": "^11.0.0"
   },
   "scripts": {
-    "lint": "eslint *.js **/*.js",
-    "test": "mocha ./test"
+    "test": "mocha \"./test/test*.js\" --reporter mocha-junit-reporter --reporter list",
+    "ci": "nyc mocha \"./test/test*.js\" --reporter mocha-junit-reporter --reporter-options mochaFile=target/junit.xml"
   },
   "engines": {
     "node": "NODEVERSION"
